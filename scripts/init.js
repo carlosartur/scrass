@@ -7,7 +7,7 @@ import {
     Player
 } from './Player.js';
 
-var enviromentSprites = new EnviromentSprites;
+var enviromentSprites = new EnviromentSprites();
 var player = new Player();
 
 const init = {
@@ -15,6 +15,7 @@ const init = {
         enviromentSprites.setGame(this)
             .setEnviroment();
 
+        player.setGame(this);
     },
     create: function () {
         this.add.image(400, 350, 'sky');
@@ -29,9 +30,7 @@ const init = {
         platforms.create(50, 250, 'ground');
         platforms.create(750, 220, 'ground');
 
-        playerSprite = player.setGame(this)
-            .configureSprites();
-
+        let playerSprite = player.configureSprites();
 
     },
     update: function () {},

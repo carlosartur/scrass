@@ -11,10 +11,11 @@ export class EnviromentSprites {
      * String
      */
     imagesPath = "assets/images/enviroment";
+
     /**
      * String
      */
-    crystalSpritePrefix = "assets/images/crystal/crystal-qubodup-ccby3-32-";
+    crystalSpritePrefix = "assets/images/crystals/crystal-qubodup-ccby3-32-";
 
     enviromentImages = {
         default: {
@@ -111,6 +112,10 @@ export class EnviromentSprites {
         for (var i in images) {
             this.game.load.image(i, `${this.imagesPath}${enviromentPath}${images[i]}`);
         }
-        this.game.load.spritesheet('crystal', `${this.crystalSpritePrefix}${crystalColour}.png`, 32, 32);
+        console.log(`${this.crystalSpritePrefix}${crystalColour}.png`);
+        this.game.load.spritesheet('crystal', `${this.crystalSpritePrefix}${crystalColour}.png`, {
+            frameWidth: 32,
+            frameHeight: 32
+        });
     }
 }
