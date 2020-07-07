@@ -43,8 +43,8 @@ export class Player {
         console.log(this.tiles[0]);
         this.game = value;
         this.game.load.spritesheet(Player.SPRITE_NAME, this.tiles, {
-            frameWidth: 400,
-            frameHeight: 400
+            frameWidth: 300,
+            frameHeight: 500
         });
         return this;
     }
@@ -53,7 +53,9 @@ export class Player {
      * 
      */
     configureSprites() {
-        let player = this.game.physics.add.sprite(100, 450, Player.SPRITE_NAME);
+        let player = this.game.physics.add.sprite(100, 0, Player.SPRITE_NAME);
+        player.displayWidth = 60;
+        player.displayHeight = 120;
         player.setBounce(0.2);
         player.setCollideWorldBounds(true);
 
