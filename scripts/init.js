@@ -9,6 +9,7 @@ import {
 
 var enviromentSprites = new EnviromentSprites();
 var player = new Player();
+var cursors, platforms, playerSprite;
 
 const init = {
     preload: function () {
@@ -20,7 +21,7 @@ const init = {
     create: function () {
         this.add.image(400, 350, 'sky');
 
-        let platforms = this.physics.add.staticGroup();
+        platforms = this.physics.add.staticGroup();
 
         platforms.create(400, 568, 'ground')
             .setScale(2)
@@ -30,10 +31,16 @@ const init = {
         platforms.create(50, 250, 'ground');
         platforms.create(750, 220, 'ground');
 
-        let playerSprite = player.configureSprites();
+        playerSprite = player.configureSprites();
+        
+        cursors = this.input.keyboard.createCursorKeys();
+
+        this.physics.add.collider(playerSprite, platforms);
 
     },
-    update: function () {},
+    update: function () {
+        //player.move(cursors);
+    },
 }
 
 const config = {
