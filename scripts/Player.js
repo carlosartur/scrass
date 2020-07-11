@@ -24,9 +24,9 @@ export class Player {
     imagesPath = "assets/images/sprites/flatboy/png";
 
     /**
-     * @attr {Array}
+     * @attr {Object}
      */
-    tiles = [];
+    tiles = {};
 
     /**
      * @attr {Object}
@@ -34,11 +34,17 @@ export class Player {
     playerSprite = null;
 
     constructor() {
-        this.tiles = [...Array(15).keys()].map(item => `${this.imagesPath}/${this.state}%20(${item + 1}).png`, this);
+        for (let key in states) {
+            const value = states[key];
+            [...Array(15).keys()].map(item => {
+                this.tiles[value] = this.tiles[value] || {};
+                this.tiles[value][`${value.toLowerCase()}${item}`] = `${this.imagesPath}/${value}%20(${item + 1}).png`;
+            }, this);
+        }
     }
 
     static get SPRITE_NAME() {
-        return 'playerSprite';
+        return 'player';
     }
 
     /**
@@ -46,10 +52,16 @@ export class Player {
      */
     setGame(value) {
         this.game = value;
-        this.game.load.spritesheet(Player.SPRITE_NAME, this.tiles, {
-            frameWidth: 300,
-            frameHeight: 500
-        });
+        for (let state in this.tiles) {
+            const imageFrames = this.tiles[state];
+            for (let key in imageFrames) {
+                const imagePath = imageFrames[key];
+                this.game.load.image(key, imagePath, {
+                    frameWidth: 100,
+                    frameHeight: 100
+                });
+            }
+        }
         return this;
     }
 
@@ -57,66 +69,82 @@ export class Player {
      * 
      */
     configureSprites() {
-        this.playerSprite = this.game.physics.add.sprite(100, 0, Player.SPRITE_NAME);
+        this.playerSprite = this.game.physics.add.sprite(100, 0, 'idle0');
+
         this.playerSprite.displayWidth = 60;
-        this.playerSprite.displayHeight = 120;
+        this.playerSprite.displayHeight = 110;
         this.playerSprite.setBounce(0.2);
         this.playerSprite.setCollideWorldBounds(true);
+        for (let state in this.tiles) {
+            const imageFrames = this.tiles[state];
+            this.game.anims.create({
+                key: state,
+                frames: Object.keys(imageFrames).map(key => ({
+                    key
+                })),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
 
-        this.game.anims.create({
-            key: 'left',
-            frames: this.game.anims.generateFrameNumbers(Player.SPRITE_NAME, {
-                start: 0,
-                end: 14
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.game.anims.create({
-            key: 'turn',
-            frames: this.game.anims.generateFrameNumbers(Player.SPRITE_NAME, {
-                start: 0,
-                end: 14
-            }),
-            frameRate: 20
-        });
-
-        this.game.anims.create({
-            key: 'right',
-            frames: this.game.anims.generateFrameNumbers(Player.SPRITE_NAME, {
-                start: 0,
-                end: 14
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
+        this.playerSprite.anims.play(states.IDLE);
 
         return this.playerSprite;
     }
 
     /**
-     * 
      * @param {*} cursors 
      */
     move(cursors) {
-        console.log(cursors);
-        if (cursors.left.isDown) {
-            this.playerSprite.setVelocityX(-160);
-
-            this.playerSprite.anims.play('left', true);
-        } else if (cursors.right.isDown) {
-            this.playerSprite.setVelocityX(160);
-
-            this.playerSprite.anims.play('right', true);
-        } else {
-            this.playerSprite.setVelocityX(0);
-
-            this.playerSprite.anims.play('turn');
+        let horizontalVelocity = 160;
+        let run = false;
+        if (cursors.shift.isDown) {
+            horizontalVelocity *= 2;
+            run = true;
         }
-
-        if (cursors.up.isDown && this.playerSprite.body.touching.down) {
+        // jump
+        if ((cursors.up.isDown || cursors.space.isDown) && this.playerSprite.body.touching.down) {
             this.playerSprite.setVelocityY(-330);
+            this.playerSprite.anims.play(states.JUMP);
         }
+
+        if (cursors.left.isDown) {
+            return this.walkLeft(horizontalVelocity, run);
+        }
+
+        if (cursors.right.isDown) {
+            return this.walkRight(horizontalVelocity, run);
+        }
+        this.idle();
+    }
+
+    /**
+     * @param {Number} horizontalVelocity 
+     * @param {Boolean} run 
+     */
+    walkLeft(horizontalVelocity, run) {
+        horizontalVelocity *= -1;
+        this.playerSprite.setVelocityX(horizontalVelocity);
+        this.playerSprite.setFlipX(true);
+        this.playerSprite.anims.play(run ? states.RUN : states.WALK, true);
+    }
+
+    /**
+     * @param {Number} horizontalVelocity 
+     * @param {Boolean} run 
+     */
+    walkRight(horizontalVelocity, run) {
+        this.playerSprite.setVelocityX(horizontalVelocity);
+        this.playerSprite.setFlipX(false);
+        this.playerSprite.anims.play(run ? states.RUN : states.WALK, true);
+    }
+
+    /**
+     * 
+     */
+    idle() {
+        this.playerSprite.setVelocityX(0);
+
+        this.playerSprite.anims.play(states.IDLE);
     }
 }

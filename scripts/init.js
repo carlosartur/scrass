@@ -7,11 +7,11 @@ import {
     Player
 } from './Player.js';
 
-var enviromentSprites = new EnviromentSprites();
-var player = new Player();
-var cursors, platforms, playerSprite;
+var enviromentSprites = new EnviromentSprites(),
+    player = new Player(),
+    cursors, platforms, playerSprite;
 
-const init = {
+const scene = {
     preload: function () {
         enviromentSprites.setGame(this)
             .setEnviroment();
@@ -23,8 +23,8 @@ const init = {
 
         platforms = this.physics.add.staticGroup();
 
-        platforms.create(400, 568, 'ground')
-            .setScale(2)
+        platforms.create(110, 568, 'ground')
+            .setScale(1)
             .refreshBody();
 
         platforms.create(600, 400, 'ground');
@@ -32,14 +32,14 @@ const init = {
         platforms.create(750, 220, 'ground');
 
         playerSprite = player.configureSprites();
-        
+
         cursors = this.input.keyboard.createCursorKeys();
 
         this.physics.add.collider(playerSprite, platforms);
 
     },
     update: function () {
-        //player.move(cursors);
+        player.move(cursors);
     },
 }
 
@@ -56,10 +56,16 @@ const config = {
             }
         }
     },
-    scene: {
-        preload: init.preload,
-        create: init.create
-    }
+    scene
 };
 
 var game = new Phaser.Game(config);
+
+console.log({
+    scene,
+    config,
+    game,
+    enviromentSprites,
+    player,
+    platforms
+})
