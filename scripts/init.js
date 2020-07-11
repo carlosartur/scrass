@@ -23,9 +23,10 @@ const scene = {
 
         platforms = this.physics.add.staticGroup();
 
-        platforms.create(110, 568, 'ground')
-            .setScale(1)
-            .refreshBody();
+
+        for (var i = 60; i <= 1000; i += 128) {
+            platforms.create(i, 540, 'ground');
+        }
 
         platforms.create(600, 400, 'ground');
         platforms.create(50, 250, 'ground');
