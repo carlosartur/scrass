@@ -43,10 +43,6 @@ export class Player {
         }
     }
 
-    static get SPRITE_NAME() {
-        return 'player';
-    }
-
     /**
      * @param {Scene} value 
      */
@@ -77,13 +73,17 @@ export class Player {
         this.playerSprite.setCollideWorldBounds(true);
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
+            let repeat = -1;
+            if ([states.DEAD, states.JUMP].includes(state)) {
+                repeat = 0;
+            }
             this.game.anims.create({
                 key: state,
                 frames: Object.keys(imageFrames).map(key => ({
                     key
                 })),
                 frameRate: 10,
-                repeat: -1
+                repeat
             });
         }
 
@@ -96,55 +96,75 @@ export class Player {
      * @param {*} cursors 
      */
     move(cursors) {
-        let horizontalVelocity = 160;
+        let horizontalVelocity = 40;
         let run = false;
+        let jumping = !this.playerSprite.body.touching.down;
+
         if (cursors.shift.isDown) {
-            horizontalVelocity *= 2;
             run = true;
         }
         // jump
-        if ((cursors.up.isDown || cursors.space.isDown) && this.playerSprite.body.touching.down) {
-            this.playerSprite.setVelocityY(-330);
-            this.playerSprite.anims.play(states.JUMP);
+        if ((cursors.up.isDown || cursors.space.isDown) && !jumping) {
+            this.playerSprite.setVelocityY(-400);
+            this.playerSprite.anims.play(states.JUMP, true);
         }
 
         if (cursors.left.isDown) {
-            return this.walkLeft(horizontalVelocity, run);
+            return this.walkLeft(horizontalVelocity, run, jumping);
         }
 
         if (cursors.right.isDown) {
-            return this.walkRight(horizontalVelocity, run);
+            return this.walkRight(horizontalVelocity, run, jumping);
         }
-        this.idle();
+        this.idle(jumping);
     }
 
     /**
      * @param {Number} horizontalVelocity 
      * @param {Boolean} run 
+     * @param {Boolean} jumping 
      */
-    walkLeft(horizontalVelocity, run) {
+    walkLeft(horizontalVelocity, run, jumping) {
         horizontalVelocity *= -1;
-        this.playerSprite.setVelocityX(horizontalVelocity);
         this.playerSprite.setFlipX(true);
-        this.playerSprite.anims.play(run ? states.RUN : states.WALK, true);
+        this.walk(horizontalVelocity, run, jumping);
     }
 
     /**
      * @param {Number} horizontalVelocity 
      * @param {Boolean} run 
+     * @param {Boolean} jumping 
      */
-    walkRight(horizontalVelocity, run) {
-        this.playerSprite.setVelocityX(horizontalVelocity);
+    walkRight(horizontalVelocity, run, jumping) {
         this.playerSprite.setFlipX(false);
-        this.playerSprite.anims.play(run ? states.RUN : states.WALK, true);
+        this.playerSprite.setVelocityX(horizontalVelocity);
+        this.walk(horizontalVelocity, run, jumping);
+    }
+
+    /**
+     * @param {Number} horizontalVelocity 
+     * @param {Boolean} run 
+     * @param {Boolean} jumping 
+     */
+    walk(horizontalVelocity, run, jumping) {
+        if (run) {
+            horizontalVelocity *= 2;
+        }
+        this.playerSprite.setVelocityX(horizontalVelocity);
+
+        let anim = run ? states.RUN : states.WALK;
+        if (jumping) {
+            anim = states.JUMP;
+        }
+        this.playerSprite.anims.play(anim, true);
     }
 
     /**
      * 
      */
-    idle() {
+    idle(jumping) {
         this.playerSprite.setVelocityX(0);
 
-        this.playerSprite.anims.play(states.IDLE);
+        this.playerSprite.anims.play(jumping ? states.JUMP : states.IDLE, true);
     }
 }
