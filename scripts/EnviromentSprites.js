@@ -32,7 +32,7 @@ export class EnviromentSprites {
                 'sky': "/BG.png",
                 'ground': "/Tile/2.png",
             },
-            crystalColour: "gray"
+            crystalColour: "grey"
         },
         sci_fi: {
             enviromentPath: '/freescifiplatform/png',
