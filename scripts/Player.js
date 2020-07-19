@@ -140,7 +140,7 @@ export class Player {
         this.playerSprite.displayHeight = 110;
 
         this.playerSprite.setBounce(0.2);
-        this.playerSprite.setCollideWorldBounds(true);
+        // this.playerSprite.setCollideWorldBounds(true);
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
             let repeat = -1;
@@ -205,6 +205,9 @@ export class Player {
      */
     walkLeft(horizontalVelocity, run, jumping) {
         horizontalVelocity *= -1;
+        if (this.playerSprite.x <= 0) {
+            horizontalVelocity = 0;
+        }
         this.playerSprite.setFlipX(true);
         this.walk(horizontalVelocity, run, jumping);
     }

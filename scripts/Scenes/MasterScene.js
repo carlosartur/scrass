@@ -25,6 +25,7 @@ export class MasterScene extends Phaser.Scene {
     crystals = null;
     scoreText = null;
     enviroment = enviroments.DEFAULT;
+    size = 0;
 
     /**
      * @param {EnviromentSprites} enviromentSprites 
@@ -48,7 +49,12 @@ export class MasterScene extends Phaser.Scene {
     }
 
     createScene() {
-        this.add.image(400, 350, 'sky');
+        this.size = this.game.config.width * 100;
+        let background = this.add.image(400, 350, 'sky');
+        background.setScrollFactor(0.01);
+
+        this.createPlatforms();
+
         this.player.configureSprites();
         this.cursors = this.input.keyboard.createCursorKeys();
         this.crystals = this.physics.add.group({
@@ -62,15 +68,13 @@ export class MasterScene extends Phaser.Scene {
         });
 
         //camera
-        this.cameras.main.setBounds(0, 0, 14400, 480);
+        this.cameras.main.setBounds(0, 0, this.size, 480);
         this.cameraDolly = new Phaser.Geom.Point(this.player.sprite.x, this.player.sprite.y);
         this.cameras.main.startFollow(this.cameraDolly);
 
         this.crystals.children.iterate(function (child) {
             child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
         });
-
-        this.createPlatforms();
 
         this.physics.add.collider(this.crystals, this.platforms);
         this.physics.add.collider(this.player.sprite, this.platforms)
@@ -85,8 +89,11 @@ export class MasterScene extends Phaser.Scene {
 
     createPlatforms() {}
 
+    count = 0;
+
     update() {
-        //camera
+
+        // //camera
         this.cameraDolly.x = Math.floor(this.player.sprite.x);
         this.cameraDolly.y = Math.floor(this.player.sprite.y);
 

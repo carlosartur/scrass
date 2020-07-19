@@ -1,9 +1,6 @@
 import {
     MasterScene
 } from "./MasterScene.js";
-import {
-    enviroments
-} from "../EnviromentSprites.js";
 
 export class Scene1 extends MasterScene {
     // enviroment = enviroments.DESERT;
@@ -14,7 +11,7 @@ export class Scene1 extends MasterScene {
 
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
-        for (var i = 60; i <= 1000; i += 128) {
+        for (var i = 60; i <= this.size; i += 128) {
             this.platforms.create(i, 540, 'ground');
         }
 
