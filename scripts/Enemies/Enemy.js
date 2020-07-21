@@ -25,9 +25,19 @@ export class Enemy {
      * @attr {Object}
      */
     exclusiveStates = {};
+   
+    /**
+     * @attr {Array}
+     */
+    tiles = [];
 
     constructor (config) {
         Object.assign(this, config);
         Object.assign(this.enemyStates, this.exclusiveStates);
+        this.tiles = this.generateTiles();
+    }
+
+    generateTiles() {
+        return [];
     }
 }

@@ -124,7 +124,7 @@ export class Player {
             const imageFrames = this.tiles[state];
             for (let key in imageFrames) {
                 const imagePath = imageFrames[key];
-                let image = this.game.load.image(key, imagePath);
+                this.game.load.image(key, imagePath);
             }
         }
         return this;
