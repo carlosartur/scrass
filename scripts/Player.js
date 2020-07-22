@@ -16,7 +16,7 @@ let self;
 export class Player {
 
     /**
-     * @attr {Array}
+     * @type {Array}
      */
     lifeColours = [{
         max: 120,
@@ -45,57 +45,57 @@ export class Player {
     }];
 
     /**
-     * @attr {String} 
+     * @type {String} 
      */
     state = states.IDLE;
 
     /**
-     * @attr {Phaser.}
+     * @type {Phaser.}
      */
     game = null;
 
     /**
-     * @attr {String}
+     * @type {String}
      */
     imagesPath = "assets/images/sprites/flatboy/png";
 
     /**
-     * @attr {Object}
+     * @type {Object}
      */
     tiles = {};
 
     /**
-     * @attr {Object}
+     * @type {Object}
      */
     playerSprite = null;
 
     /**
-     * @attr {Number}
+     * @type {Number}
      */
     score = 0;
 
     /**
-     * @attr {Any}
+     * @type {Any}
      */
     display = null;
 
     /**
-     * @attr {Number}
+     * @type {Number}
      */
     life = 120;
 
     /**
-     * @attr {Number}
+     * @type {Number}
      */
     width = 100;
 
     /**
-     * @attr {Number}
+     * @type {Number}
      */
     heigth = 400;
 
     /**
-     * @attr {Object}
+     * @type {Object}
      */
     lifeBar = null;
 

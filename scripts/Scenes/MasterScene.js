@@ -6,18 +6,19 @@ import {
 import {
     Player
 } from "../Player.js";
+
 import {
     intRandom
 } from "../Helpers.js";
 
 export class MasterScene extends Phaser.Scene {
     /**
-     * @attr {EnviromentSprites} enviromentSprites
+     * @type {EnviromentSprites} enviromentSprites
      */
     enviromentSprites = null;
 
     /**
-     * @attr {Player} player
+     * @type {Player} player
      */
     player = null;
     cursors = null;
@@ -37,6 +38,9 @@ export class MasterScene extends Phaser.Scene {
         this.player = player;
     }
 
+    /**
+     * 
+     */
     preload() {
         this.enviromentSprites.setGame(this)
             .setEnviroment(this.enviroment);
@@ -44,16 +48,24 @@ export class MasterScene extends Phaser.Scene {
         this.player.setGame(this);
     }
 
+    /**
+     * 
+     */
     create() {
         this.createScene();
     }
 
+    /**
+     * 
+     */
     createScene() {
         this.size = this.game.config.width * 100;
         let background = this.add.image(400, 350, 'sky');
         background.setScrollFactor(0.01);
 
         this.createPlatforms();
+
+        this.createEnemies();
 
         this.player.configureSprites();
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -87,10 +99,19 @@ export class MasterScene extends Phaser.Scene {
         this.physics.add.overlap(this.player.sprite, this.crystals, this.player.collectCrystal, null, this);
     }
 
+    /**
+     * 
+     */
     createPlatforms() {}
 
-    count = 0;
+    /**
+     * 
+     */
+    createEnemies() {}
 
+    /**
+     * 
+     */
     update() {
 
         // //camera

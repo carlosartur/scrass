@@ -1,39 +1,39 @@
 import { states } from "../Player";
+import { Clonable } from "../Clonable";
 
-export class Enemy {
+export class Enemy extends Clonable {
     /**
-     * @attr {Number}
+     * @type {Number}
      */
     life = 10;
 
     /**
-     * @attr {String}
+     * @type {String}
      */
     enemiesImagesPath = "assets/images/sprites";
 
     /**
-     * @attr {String}
+     * @type {String}
      */
     imagesPath = "";
 
     /**
-     * @attr {Object}
+     * @type {Object}
      */
     enemyStates = states;
 
     /**
-     * @attr {Object}
+     * @type {Object}
      */
     exclusiveStates = {};
    
     /**
-     * @attr {Array}
+     * @type {Array}
      */
     tiles = [];
 
     constructor (config) {
-        Object.assign(this, config);
-        Object.assign(this.enemyStates, this.exclusiveStates);
+        super(config);
         this.tiles = this.generateTiles();
     }
 

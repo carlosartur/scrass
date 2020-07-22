@@ -4,12 +4,12 @@ import { range } from "../Helpers.js";
 export class Ninja extends Enemy {
     
     /**
-     * @attr {String}
+     * @type {String}
      */
     imagesPath = "/ninjaadventurenew/png";
     
     /**
-     * @attr {Object}
+     * @type {Object}
      */
     exclusiveStates = {
         ATTACK: 'Attack',
@@ -21,7 +21,7 @@ export class Ninja extends Enemy {
     }
 
     /**
-     * @attr {Phaser.Scene}
+     * @type {Phaser.Scene}
      */
     game = null;
 
@@ -43,6 +43,7 @@ export class Ninja extends Enemy {
         }, this);
         for (let state in this.enemyStates) {
             const imageFrames = this.tiles[state];
+            
         }
     }
 }
