@@ -10,8 +10,13 @@ import {
     Scene1
 } from './Scenes/Scene1.js';
 
+import { 
+    Ninja
+} from './Enemies/Ninja.js';
+
 var enviromentSprites = new EnviromentSprites(),
-    player = new Player();
+    player = new Player(),
+    masterNinja = new Ninja();
 
 var scene = new Scene1(enviromentSprites, player);
 

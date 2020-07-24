@@ -25,6 +25,22 @@ export class Ninja extends Enemy {
      */
     game = null;
 
+    /**
+     * @param {Object} config 
+     */
+    constructor(config) {
+        super(config);
+        Object.assign(this.exclusiveStates, this.enemyStates);
+        this.init();
+    }
+
+    /**
+     * @method
+     */
+    init() {
+        this.generateTiles();
+    }
+
     getGame() {
         return this.game;
     }
@@ -33,17 +49,19 @@ export class Ninja extends Enemy {
         this.game = value;
     }
 
+    /**
+     * @method
+     */
     generateTiles() {
-        this.enemyStates
         let imagesArray = range(0, 9);
-
-        imagesArray.map(item => {
-            this.tiles[value] = this.tiles[value] || {};
-            this.tiles[value][`${value.toLowerCase()}${item}`] = `${this.imagesPath}/${value}%20(${item + 1}).png`;
-        }, this);
-        for (let state in this.enemyStates) {
-            const imageFrames = this.tiles[state];
-            
+        
+        for (let state in this.exclusiveStates) {
+            const imageFrames = this.exclusiveStates[state];
+            imagesArray.map(item => {
+                this.tiles[imageFrames] = this.tiles[imageFrames] || {};
+                this.tiles[imageFrames][`${imageFrames.toLowerCase()}${item}`] = `${this.enemiesImagesPath}${this.imagesPath}/${imageFrames}_00${item}.png`;
+            }, this);            
         }
+        console.log(this.tiles);
     }
 }

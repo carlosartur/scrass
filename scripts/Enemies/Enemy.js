@@ -1,5 +1,5 @@
-import { states } from "../Player";
-import { Clonable } from "../Clonable";
+import { states } from "../Player.js";
+import { Clonable } from "../Clonable.js";
 
 export class Enemy extends Clonable {
     /**
@@ -30,14 +30,12 @@ export class Enemy extends Clonable {
     /**
      * @type {Array}
      */
-    tiles = [];
+    tiles = {};
 
-    constructor (config) {
-        super(config);
-        this.tiles = this.generateTiles();
-    }
-
+    /**
+     * @method
+     */
     generateTiles() {
-        return [];
+        return this.tiles;
     }
 }

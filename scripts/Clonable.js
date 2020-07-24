@@ -6,7 +6,7 @@ export class Clonable {
     __class = null;
     
     /**
-     * @param {*} obj 
+     * @param {Object} obj 
      */
     constructor(obj) {
         Object.assign(this, obj);
@@ -14,9 +14,17 @@ export class Clonable {
     }
 
     /**
-     * 
+     * @method
      */
     clone() {
         return new this.__class(this);
+    }
+
+    /**
+     * Use this method as constructor for classes that extends clonable
+     * @method  
+     */
+    init() {
+        return this;
     }
 }
