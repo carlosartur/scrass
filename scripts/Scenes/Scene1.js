@@ -1,11 +1,22 @@
 import {
     MasterScene
 } from "./MasterScene.js";
-import { EnviromentSprites } from "../EnviromentSprites.js";
-import { Player } from "../Player.js";
-import { Ninja } from "../Enemies/Ninja.js";
+import {
+    EnviromentSprites
+} from "../EnviromentSprites.js";
+import {
+    Player
+} from "../Player.js";
+import {
+    Ninja
+} from "../Enemies/Ninja.js";
 
 export class Scene1 extends MasterScene {
+    /**
+     * @type {Number}
+     */
+    size = 10500;
+
     /**
      * @type {Ninja}
      */
@@ -17,7 +28,12 @@ export class Scene1 extends MasterScene {
      */
     constructor(enviromentSprites, player) {
         super(enviromentSprites, player);
-        //this.masterNinja = new Ninja();
+        this.masterNinja = new Ninja();
+    }
+
+    preload() {
+        super.preload();
+        this.masterNinja.setGame(this);
     }
 
     /**

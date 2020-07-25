@@ -59,7 +59,6 @@ export class MasterScene extends Phaser.Scene {
      * 
      */
     createScene() {
-        this.size = this.game.config.width * 100;
         let background = this.add.image(400, 350, 'sky');
         background.setScrollFactor(0.01);
 
