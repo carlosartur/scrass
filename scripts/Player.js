@@ -1,6 +1,9 @@
 import {
     range
 } from "./Helpers.js";
+import {
+    MasterScene
+} from "./Scenes/MasterScene.js";
 
 export const states = {
     DEAD: "Dead",
@@ -50,7 +53,12 @@ export class Player {
     state = states.IDLE;
 
     /**
-     * @type {Phaser.}
+     * @type {Boolean}
+     */
+    deadAnimationPlayed = false;
+
+    /**
+     * @type {MasterScene}
      */
     game = null;
 
@@ -83,6 +91,11 @@ export class Player {
      * @type {Number}
      */
     life = 120;
+
+    /**
+     * @type {Number}
+     */
+    displayLife = 0;
 
     /**
      * @type {Number}
@@ -136,11 +149,11 @@ export class Player {
     configureSprites() {
         this.playerSprite = this.game.physics.add.sprite(100, 0, 'idle0');
 
-        this.playerSprite.displayWidth = 60;
-        this.playerSprite.displayHeight = 110;
+        this.sprite.displayWidth = 60;
+        this.sprite.displayHeight = 110;
 
-        this.playerSprite.setBounce(0.2);
-        // this.playerSprite.setCollideWorldBounds(true);
+        this.sprite.setBounce(0.2);
+        // this.sprite.setCollideWorldBounds(true);
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
             let repeat = -1;
@@ -157,10 +170,10 @@ export class Player {
             });
         }
 
-        this.playerSprite.anims.play(states.IDLE);
+        this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);
         this.configureLifeBar();
-        return this.playerSprite;
+        return this.sprite;
     }
 
     /**
@@ -169,7 +182,10 @@ export class Player {
     move(cursors) {
         this.updateLifeBar();
         if (this.isDead) {
-            this.playerSprite.anims.play(states.DEAD, true);
+            if (!this.deadAnimationPlayed) {
+                this.playerSprite.anims.play(states.DEAD, true);
+                this.deadAnimationPlayed = true;
+            }
             this.playerSprite.setVelocityX(0);
             this.updateDisplay('GAME OVER!');
             return;
@@ -314,7 +330,13 @@ export class Player {
             minTextBorderDistance;
         this.lifeBar.y = 16;
 
-        this.lifeBar.scaleX = this.life / 120;
+        if (this.life > this.displayLife) {
+            this.displayLife += 0.5;
+        } else if (this.life < this.displayLife) {
+            this.displayLife -= 0.5;
+        }
+
+        this.lifeBar.scaleX = this.displayLife / 120;
     }
 
     get isDead() {
