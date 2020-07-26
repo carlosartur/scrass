@@ -290,7 +290,7 @@ export class Player {
         }
         self.life -= 10;
         self.sprite.setTint(0xff8800);
-        self.invencibility = 250;
+        self.invincibility = 250;
     }
 
     /**
