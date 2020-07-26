@@ -113,6 +113,11 @@ export class Player {
     lifeBar = null;
 
     /**
+     * @type {Number}
+     */
+    invincibility = 0;
+
+    /**
      * 
      */
     constructor() {
@@ -180,6 +185,8 @@ export class Player {
      */
     move(cursors) {
         this.updateLifeBar();
+        this.decreaseInvencibility();
+
         if (this.isDead) {
             if (!this.deadAnimationPlayed) {
                 this.playerSprite.anims.play(states.DEAD, true);
@@ -278,7 +285,26 @@ export class Player {
      * 
      */
     hurt() {
+        if (self.invincibility) {
+            return;
+        }
         self.life -= 10;
+        self.sprite.setTint(0xff8800);
+        self.invencibility = 250;
+    }
+
+    /**
+     * 
+     */
+    decreaseInvencibility() {
+        if (this.invincibility > 0) {
+            this.invincibility--;
+            return;
+        }
+        if (this.invincibility < 0) {
+            this.invincibility = 0;
+        }
+        this.sprite.setTint(0xffffff);
     }
 
     /**
