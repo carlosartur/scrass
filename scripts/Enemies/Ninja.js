@@ -52,6 +52,14 @@ export class Ninja extends Enemy {
     /**
      * @method
      */
+    init() {
+        super.init();
+        this.generateTiles();
+    }
+
+    /**
+     * @method
+     */
     getGame() {
         return this.game;
     }
@@ -68,13 +76,14 @@ export class Ninja extends Enemy {
                     continue;
                 }
                 imagesArray.map(item => {
-                    this.tiles[imageFrames] = this.tiles[imageFrames] || {};
-                    this.tiles[imageFrames][`${imageFrames.toLowerCase()}${item}`] = `${this.enemiesImagesPath}${this.imagesPath}/${imageFrames}_00${item}.png`;
+                    const imageAnimationKey = this.getAnimationKey(imageFrames);
+                    this.tiles[imageAnimationKey] = this.tiles[imageAnimationKey] || {};
+                    this.tiles[imageAnimationKey][`${imageAnimationKey}${item}`] = `${this.enemiesImagesPath}${this.imagesPath}/${imageFrames}_00${item}.png`;
                 }, this);
             }
             this.imagesLoaded = true;
         }
-        this.configureSprites();
+        return this;
     }
 
     /**
@@ -89,25 +98,43 @@ export class Ninja extends Enemy {
         this.sprite.setBounce(0.2);
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
+            const frames = Object.keys(imageFrames).map(key => ({
+                key
+            }));
             let repeat = -1;
             if ([states.DEAD, states.JUMP].includes(state)) {
                 repeat = 0;
             }
-            this.game.anims.create({
+            const animConfig = {
                 key: state,
-                frames: Object.keys(imageFrames).map(key => ({
-                    key
-                })),
+                frames,
                 frameRate: 10,
                 repeat
-            });
+            };
+            this.game.anims.create(animConfig);
         }
-
-        this.sprite.anims.play(states.IDLE);
+        this.playAnimation();
         this.sprite.setSize(this.width, this.heigth);
+        return this.sprite;
     }
 
+    /**
+     * @method
+     */
     get sprite() {
         return this.enemySprite;
+    }
+
+    /**
+     * @param {String} animationState 
+     */
+    playAnimation(animationState = states.IDLE) {
+        let key = this.getAnimationKey(animationState);
+        try {
+            let anims = this.sprite.anims;
+            anims.play(key);
+        } catch (error) {
+            console.error(error);
+        }
     }
 }

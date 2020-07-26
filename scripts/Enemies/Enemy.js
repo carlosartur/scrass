@@ -71,18 +71,31 @@ export class Enemy extends Clonable {
      */
     setGame(value) {
         this.game = value;
-        let className = this.constructor.name;
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
             for (let key in imageFrames) {
                 const imagePath = imageFrames[key];
-                const imgKey = `${className.toLowerCase()}_${key}`;
-                this.game.load.image(imgKey, imagePath);
+                this.game.load.image(key, imagePath);
             }
         }
-        this.configureSprites();
+        this.generateTiles();
         return this;
     }
 
     configureSprites() {}
+
+    /**
+     * @returns {String}
+     */
+    get enemySpriteNamePrefix() {
+        return `${this.constructor.name.toLowerCase()}_`;
+    }
+
+    /**
+     * @returns {String}
+     */
+    getAnimationKey(state) {
+        let regex = new RegExp(`/(${this.enemySpriteNamePrefix}){1,}/g`);
+        return `${this.enemySpriteNamePrefix}${state}`.replace(regex, this.enemySpriteNamePrefix).toLowerCase();
+    }
 }

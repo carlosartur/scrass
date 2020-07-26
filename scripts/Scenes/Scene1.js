@@ -31,6 +31,9 @@ export class Scene1 extends MasterScene {
         this.masterNinja = new Ninja();
     }
 
+    /**
+     * 
+     */
     preload() {
         super.preload();
         this.masterNinja.setGame(this);
@@ -51,9 +54,9 @@ export class Scene1 extends MasterScene {
     }
 
     /**
-     * 
+     * @returns {Sprite[]}
      */
     createEnemies() {
-
+        return [this.masterNinja.configureSprites()];
     }
 }

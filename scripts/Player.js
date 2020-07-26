@@ -153,7 +153,6 @@ export class Player {
         this.sprite.displayHeight = 110;
 
         this.sprite.setBounce(0.2);
-        // this.sprite.setCollideWorldBounds(true);
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
             let repeat = -1;

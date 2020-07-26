@@ -64,9 +64,9 @@ export class MasterScene extends Phaser.Scene {
 
         this.createPlatforms();
 
-        this.createEnemies();
-
         this.player.configureSprites();
+        let enemiesSprites = this.createEnemies();
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.crystals = this.physics.add.group({
             key: 'crystal',
@@ -88,7 +88,11 @@ export class MasterScene extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.crystals, this.platforms);
-        this.physics.add.collider(this.player.sprite, this.platforms)
+        this.physics.add.collider(this.player.sprite, this.platforms);
+
+        enemiesSprites.forEach(enemySprite => {
+            this.physics.add.collider(enemySprite, this.platforms);
+        }, this);
 
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
             fontSize: '32px',
