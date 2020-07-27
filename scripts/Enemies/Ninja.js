@@ -9,6 +9,7 @@ import {
     states,
     DIRECTIONS
 } from "../Player.js";
+import { MasterScene } from "../Scenes/MasterScene.js";
 
 export class Ninja extends Enemy {
 
@@ -35,7 +36,7 @@ export class Ninja extends Enemy {
     }
 
     /**
-     * @type {Phaser.Scene}
+     * @type {MasterScene}
      */
     game = null;
 
@@ -160,12 +161,24 @@ export class Ninja extends Enemy {
             this.sprite.setVelocityX(0);
             return;
         }
+        let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left;
+        let touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
 
-        if (this.isMovimentOver) {
-            let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT],
+        if (this.isMovimentOver || touchingLeft || touchingRight) {
+            let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT, DIRECTIONS.UP],
                 choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
+            
+            if (touchingLeft) {
+                choosedDirection = DIRECTIONS.RIGHT;
+            }
+
+            if (touchingRight) {
+                choosedDirection = DIRECTIONS.LEFT;
+            }
             this.configureMovimentDirection(choosedDirection);
         }
+
+        this.sprite.setVelocityX(this.currentHorizontalVelocity);
         this.currentMovimentSize--;
     }
 
@@ -174,8 +187,27 @@ export class Ninja extends Enemy {
      */
     configureMovimentDirection(choosedDirection) {
         if (choosedDirection === DIRECTIONS.LEFT) {
-            
+            this.runLeft();
+        }
+
+        if (choosedDirection === DIRECTIONS.RIGHT) {
+            this.runRight();
         }
     }
 
+    /**
+     * @method
+     */
+    runLeft() {
+        this.currentHorizontalVelocity = this.horizontalVelocity * -1;
+        this.sprite.setFlipX(true);
+    }
+
+    /**
+     * @method
+     */
+    runRight() {
+        this.currentHorizontalVelocity = this.horizontalVelocity;
+        this.sprite.setFlipX(false);
+    }
 }

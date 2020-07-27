@@ -85,6 +85,11 @@ export class Enemy extends Clonable {
     horizontalVelocity = 80;
 
     /**
+     * @type {Number}
+     */
+    currentHorizontalVelocity = 80;
+
+    /**
      * @method
      */
     generateTiles() {
@@ -107,7 +112,12 @@ export class Enemy extends Clonable {
         return this;
     }
 
-    configureSprites() {}
+    /**
+     * @abstract
+     */
+    configureSprites() {
+        throw new TypeError('Must implement "configureSprites" on child class.');
+    }
 
     /**
      * @returns {String}
@@ -124,7 +134,12 @@ export class Enemy extends Clonable {
         return `${this.enemySpriteNamePrefix}${state}`.replace(regex, this.enemySpriteNamePrefix).toLowerCase();
     }
 
-    move() {}
+    /**
+     * @abstract
+     */
+    move() {
+        throw new TypeError('Must implement "move" on child class.');
+    }
 
     get isDead() {
         return this.life <= 0;
