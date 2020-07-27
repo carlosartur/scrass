@@ -2,10 +2,12 @@ import {
     Enemy
 } from "./Enemy.js";
 import {
-    range
+    range,
+    intRandom
 } from "../Helpers.js";
 import {
-    states
+    states,
+    DIRECTIONS
 } from "../Player.js";
 
 export class Ninja extends Enemy {
@@ -96,6 +98,19 @@ export class Ninja extends Enemy {
         this.sprite.displayHeight = 110;
 
         this.sprite.setBounce(0.2);
+        this.createAnims();
+        this.playAnimation();
+        this.sprite.setSize(this.width, this.heigth);
+        return this;
+    }
+
+    /**
+     * @returns {Ninja}
+     */
+    createAnims() {
+        if (this.animsCreated) {
+            return this;
+        }
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
             const frames = Object.keys(imageFrames).map(key => ({
@@ -113,9 +128,8 @@ export class Ninja extends Enemy {
             };
             this.game.anims.create(animConfig);
         }
-        this.playAnimation();
-        this.sprite.setSize(this.width, this.heigth);
-        return this.sprite;
+        this.animsCreated = true;
+        return this;
     }
 
     /**
@@ -130,11 +144,38 @@ export class Ninja extends Enemy {
      */
     playAnimation(animationState = states.IDLE) {
         let key = this.getAnimationKey(animationState);
-        try {
-            let anims = this.sprite.anims;
-            anims.play(key);
-        } catch (error) {
-            console.error(error);
+        let anims = this.sprite.anims;
+        anims.play(key);
+    }
+
+    /**
+     * 
+     */
+    move() {
+        if (this.isDead) {
+            if (!this.deadAnimationPlayed) {
+                this.playAnimation(states.DEAD);
+                this.deadAnimationPlayed = true;
+            }
+            this.sprite.setVelocityX(0);
+            return;
+        }
+
+        if (this.isMovimentOver) {
+            let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT],
+                choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
+            this.configureMovimentDirection(choosedDirection);
+        }
+        this.currentMovimentSize--;
+    }
+
+    /**
+     * @param {DIRECTIONS} choosedDirection 
+     */
+    configureMovimentDirection(choosedDirection) {
+        if (choosedDirection === DIRECTIONS.LEFT) {
+            
         }
     }
+
 }

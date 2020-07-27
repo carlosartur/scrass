@@ -60,6 +60,31 @@ export class Enemy extends Clonable {
     imagesLoaded = false;
 
     /**
+     * @type {Boolean}
+     */
+    animsCreated = false;
+
+    /**
+     * @type {Boolean}
+     */
+    deadAnimationPlayed = false;
+
+    /**
+     * @type {Number}
+     */
+    movimentSize = 500;
+
+    /**
+     * @type {Number}
+     */
+    currentMovimentSize = 500;
+
+    /**
+     * @type {Number}
+     */
+    horizontalVelocity = 80;
+
+    /**
      * @method
      */
     generateTiles() {
@@ -97,5 +122,22 @@ export class Enemy extends Clonable {
     getAnimationKey(state) {
         let regex = new RegExp(`/(${this.enemySpriteNamePrefix}){1,}/g`);
         return `${this.enemySpriteNamePrefix}${state}`.replace(regex, this.enemySpriteNamePrefix).toLowerCase();
+    }
+
+    move() {}
+
+    get isDead() {
+        return this.life <= 0;
+    }
+
+    /**
+     * @type {Boolean}
+     */
+    get isMovimentOver() {
+        if (this.currentMovimentSize <= 0) {
+            this.currentMovimentSize = this.movimentSize;
+            return true;
+        }
+        return false;
     }
 }

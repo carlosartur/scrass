@@ -25,8 +25,21 @@ export class MasterScene extends Phaser.Scene {
     platforms = null;
     crystals = null;
     scoreText = null;
+
+    /**
+     * @type {String}
+     */
     enviroment = enviroments.DEFAULT;
+
+    /**
+     * @type {Number}
+     */
     size = 0;
+
+    /**
+     * @type {Array}
+     */
+    enemiesSprites = [];
 
     /**
      * @param {EnviromentSprites} enviromentSprites 
@@ -65,7 +78,7 @@ export class MasterScene extends Phaser.Scene {
         this.createPlatforms();
 
         this.player.configureSprites();
-        let enemiesSprites = this.createEnemies();
+        this.enemiesSprites = this.createEnemies();
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.crystals = this.physics.add.group({
@@ -90,10 +103,11 @@ export class MasterScene extends Phaser.Scene {
         this.physics.add.collider(this.crystals, this.platforms);
         this.physics.add.collider(this.player.sprite, this.platforms);
 
-        enemiesSprites.forEach(enemySprite => {
-            this.physics.add.collider(enemySprite, this.platforms);
-            this.physics.add.collider(enemySprite, this.player.sprite);
-            this.physics.add.overlap(this.player.sprite, enemySprite, this.player.hurt, null, this);
+        this.enemiesSprites.forEach(enemySprite => {
+            let sprite = enemySprite.sprite;
+            this.physics.add.collider(sprite, this.platforms);
+            this.physics.add.collider(sprite, this.player.sprite, this.player.hurt);
+            this.physics.add.overlap(this.player.sprite, sprite, this.player.hurt, null, this);
         }, this);
 
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
@@ -118,10 +132,11 @@ export class MasterScene extends Phaser.Scene {
      * 
      */
     update() {
-
-        // //camera
+        //camera
         this.cameraDolly.x = Math.floor(this.player.sprite.x);
         this.cameraDolly.y = Math.floor(this.player.sprite.y);
+
+        this.enemiesSprites.forEach(enemy => enemy.move());
 
         this.player.move(this.cursors);
     }

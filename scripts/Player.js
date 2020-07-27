@@ -13,6 +13,13 @@ export const states = {
     WALK: "Walk",
 };
 
+export const DIRECTIONS = {
+    LEFT: 'left',
+    RIGHT: 'right',
+    UP: 'up',
+    DOWN: 'down',
+};
+
 /** Use "self" variable as a alias for "this", to use on functions called using "bind" */
 let self;
 
@@ -189,25 +196,24 @@ export class Player {
 
         if (this.isDead) {
             if (!this.deadAnimationPlayed) {
-                this.playerSprite.anims.play(states.DEAD, true);
+                this.sprite.anims.play(states.DEAD, true);
                 this.deadAnimationPlayed = true;
             }
-            this.playerSprite.setVelocityX(0);
+            this.sprite.setVelocityX(0);
             this.updateDisplay('GAME OVER!');
             return;
         }
         this.updateDisplay();
         let horizontalVelocity = 80;
         let run = false;
-        let jumping = !this.playerSprite.body.touching.down;
+        let jumping = !this.sprite.body.touching.down;
 
         if (cursors.shift.isDown) {
             run = true;
         }
-        // jump
-        if ((cursors.up.isDown || cursors.space.isDown) && !jumping) {
-            this.playerSprite.setVelocityY(-400);
-            this.playerSprite.anims.play(states.JUMP, true);
+
+        if (cursors.up.isDown || cursors.space.isDown) {
+            this.jump(jumping);
         }
 
         if (cursors.left.isDown) {
@@ -221,16 +227,27 @@ export class Player {
     }
 
     /**
+     * @param {Boolean} jumping To force a jump, pass 'false'
+     */
+    jump(jumping) {
+        if (jumping) {
+            return;
+        }
+        this.sprite.setVelocityY(-400);
+        this.sprite.anims.play(states.JUMP, true);
+    }
+
+    /**
      * @param {Number} horizontalVelocity 
      * @param {Boolean} run 
      * @param {Boolean} jumping 
      */
     walkLeft(horizontalVelocity, run, jumping) {
         horizontalVelocity *= -1;
-        if (this.playerSprite.x <= 0) {
+        if (this.sprite.x <= 0) {
             horizontalVelocity = 0;
         }
-        this.playerSprite.setFlipX(true);
+        this.sprite.setFlipX(true);
         this.walk(horizontalVelocity, run, jumping);
     }
 
@@ -240,8 +257,8 @@ export class Player {
      * @param {Boolean} jumping 
      */
     walkRight(horizontalVelocity, run, jumping) {
-        this.playerSprite.setFlipX(false);
-        this.playerSprite.setVelocityX(horizontalVelocity);
+        this.sprite.setFlipX(false);
+        this.sprite.setVelocityX(horizontalVelocity);
         this.walk(horizontalVelocity, run, jumping);
     }
 
@@ -254,22 +271,22 @@ export class Player {
         if (run) {
             horizontalVelocity *= 2;
         }
-        this.playerSprite.setVelocityX(horizontalVelocity);
+        this.sprite.setVelocityX(horizontalVelocity);
 
         let anim = run ? states.RUN : states.WALK;
         if (jumping) {
             anim = states.JUMP;
         }
-        this.playerSprite.anims.play(anim, true);
+        this.sprite.anims.play(anim, true);
     }
 
     /**
      * @param {boolean} jumping 
      */
     idle(jumping) {
-        this.playerSprite.setVelocityX(0);
+        this.sprite.setVelocityX(0);
 
-        this.playerSprite.anims.play(jumping ? states.JUMP : states.IDLE, true);
+        this.sprite.anims.play(jumping ? states.JUMP : states.IDLE, true);
     }
 
     /**
@@ -313,7 +330,7 @@ export class Player {
     updateDisplay(text) {
         let spriteTextDistance = 386,
             minTextBorderDistance = 16,
-            currentPosition = this.playerSprite.x - spriteTextDistance;
+            currentPosition = this.sprite.x - spriteTextDistance;
         text = text || `Score: ${this.score}`;
         this.display.setText(text);
         this.display.x = (currentPosition > minTextBorderDistance) ?
@@ -347,7 +364,7 @@ export class Player {
     updateLifeBar() {
         let spriteTextDistance = 100,
             minTextBorderDistance = 300,
-            currentPosition = this.playerSprite.x - spriteTextDistance;
+            currentPosition = this.sprite.x - spriteTextDistance;
 
         this.lifeBar.fillStyle(this.lifeBarColour, 1);
         this.lifeBar.x = (currentPosition > minTextBorderDistance) ?
