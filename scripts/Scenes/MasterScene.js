@@ -106,8 +106,8 @@ export class MasterScene extends Phaser.Scene {
         this.enemiesSprites.forEach(enemySprite => {
             let sprite = enemySprite.sprite;
             this.physics.add.collider(sprite, this.platforms);
-            this.physics.add.collider(sprite, this.player.sprite, this.player.hurt);
-            this.physics.add.overlap(this.player.sprite, sprite, this.player.hurt, null, this);
+            this.physics.add.collider(sprite, this.player.sprite, enemySprite.touchPlayer);
+            this.physics.add.overlap(this.player.sprite, sprite, enemySprite.touchPlayer, null, this);
         }, this);
 
         this.scoreText = this.add.text(16, 16, 'Score: 0', {

@@ -141,6 +141,13 @@ export class Enemy extends Clonable {
         throw new TypeError('Must implement "move" on child class.');
     }
 
+    /**
+     * @abstract
+     */
+    touchPlayer() {
+        throw new TypeError('Must implement "move" on child class.');
+    }
+
     get isDead() {
         return this.life <= 0;
     }

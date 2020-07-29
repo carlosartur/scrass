@@ -302,7 +302,7 @@ export class Player {
      * 
      */
     hurt() {
-        if (self.invincibility) {
+        if (self.invincibility || self.idDead) {
             return;
         }
         self.life -= 10;

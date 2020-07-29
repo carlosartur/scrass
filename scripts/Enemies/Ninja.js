@@ -11,6 +11,11 @@ import {
 } from "../Player.js";
 import { MasterScene } from "../Scenes/MasterScene.js";
 
+/**
+ * @type {Ninja}
+ */
+let self = null;
+
 export class Ninja extends Enemy {
 
     /**
@@ -41,6 +46,16 @@ export class Ninja extends Enemy {
     game = null;
 
     /**
+     * @type {Number}
+     */
+    horizontalVelocity = 120;
+
+    /**
+     * @type {Number}
+     */
+    currentHorizontalVelocity = 120;
+
+    /**
      * @param {Object} config 
      */
     constructor(config, game = null) {
@@ -50,6 +65,8 @@ export class Ninja extends Enemy {
             this.setGame(game);
         }
         this.init();
+
+        self = this;
     }
 
     /**
@@ -193,6 +210,7 @@ export class Ninja extends Enemy {
         if (choosedDirection === DIRECTIONS.RIGHT) {
             this.runRight();
         }
+        this.playAnimation(this.exclusiveStates.RUN)
     }
 
     /**
@@ -209,5 +227,17 @@ export class Ninja extends Enemy {
     runRight() {
         this.currentHorizontalVelocity = this.horizontalVelocity;
         this.sprite.setFlipX(false);
+    }
+
+    /**
+     * @method
+     */
+    touchPlayer() {
+        let player = self.game.player;
+        if (player.sprite.y < self.sprite.y) {
+            player.jump();
+            return;
+        }
+        player.hurt();
     }
 }
