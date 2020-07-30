@@ -125,6 +125,11 @@ export class Player {
     invincibility = 0;
 
     /**
+     * @type {String} 
+     */
+    currentDirection = DIRECTIONS.RIGHT;
+
+    /**
      * 
      */
     constructor() {
@@ -184,7 +189,6 @@ export class Player {
         this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);
         this.configureLifeBar();
-        this.sprite.setOffset(0, 100);
         return this.sprite;
     }
 
@@ -248,6 +252,7 @@ export class Player {
         if (this.sprite.x <= 0) {
             horizontalVelocity = 0;
         }
+        this.turnLeft();
         this.sprite.setFlipX(true);
         this.walk(horizontalVelocity, run, jumping);
     }
@@ -261,6 +266,7 @@ export class Player {
         this.sprite.setFlipX(false);
         this.sprite.setVelocityX(horizontalVelocity);
         this.walk(horizontalVelocity, run, jumping);
+        this.turnRight();
     }
 
     /**
@@ -380,6 +386,30 @@ export class Player {
         }
 
         this.lifeBar.scaleX = this.displayLife / 120;
+    }
+
+    /**
+     * @method 
+     */
+    turnLeft() {
+        if (this.currentDirection === DIRECTIONS.LEFT) {
+            return false;
+        }
+        this.currentDirection = DIRECTIONS.LEFT;
+        this.sprite.setOffset(300, 100);
+        this.sprite.x -= 30;
+    }
+
+    /**
+     * @method
+     */
+    turnRight() {
+        if (this.currentDirection === DIRECTIONS.RIGHT) {
+            return false;
+        }
+        this.currentDirection = DIRECTIONS.RIGHT;
+        this.sprite.setOffset(0, 100);
+        this.sprite.x += 30;
     }
 
     get isDead() {
