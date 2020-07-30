@@ -407,7 +407,7 @@ export class Player {
             return false;
         }
         this.currentDirection = DIRECTIONS.LEFT;
-        this.sprite.setOffset(0, -200);
+        this.sprite.setOffset(300, 100);
         this.sprite.x -= 30;
         this.currentCameraDifferenceX = this.cameraDifferenceX;
     }
@@ -420,7 +420,7 @@ export class Player {
             return false;
         }
         this.currentDirection = DIRECTIONS.RIGHT;
-        this.sprite.setOffset(200, -200);
+        this.sprite.setOffset(0, 100);
         this.sprite.x += 30;
         this.currentCameraDifferenceX = this.cameraDifferenceX * -1;
     }

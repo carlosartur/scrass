@@ -224,7 +224,7 @@ export class Ninja extends Enemy {
     runLeft() {
         this.currentHorizontalVelocity = this.horizontalVelocity * -1;
         this.sprite.setFlipX(true);
-        this.sprite.setOffset(300, 100);
+        this.sprite.setOffset(50, 50);
     }
 
     /**
@@ -233,18 +233,32 @@ export class Ninja extends Enemy {
     runRight() {
         this.currentHorizontalVelocity = this.horizontalVelocity;
         this.sprite.setFlipX(false);
-        this.sprite.setOffset(0, 100);
+        this.sprite.setOffset(100, 50);
     }
 
     /**
      * @method
      */
     touchPlayer() {
-        let player = self.game.player;
-        if (player.sprite.y < self.sprite.y) {
+        if (self.isDead) {
+            return false;
+        }
+        
+        let player = self.game.player,
+            jumpOnHead = self.sprite.body.touching.up && player.sprite.body.touching.down;
+        
+        if (jumpOnHead) {
             player.jump();
+            self.hurt();
             return;
         }
         player.hurt();
+    }
+
+    /**
+     * @method
+     */
+    hurt() {
+        this.life -= 10;
     }
 }
