@@ -140,7 +140,7 @@ export class Ninja extends Enemy {
                 key
             }));
             let repeat = -1;
-            if ([states.DEAD, states.JUMP].includes(state)) {
+            if ([this.getAnimationKey(states.DEAD), this.getAnimationKey(states.JUMP)].includes(state)) {
                 repeat = 0;
             }
             const animConfig = {
@@ -181,6 +181,9 @@ export class Ninja extends Enemy {
                 this.deadAnimationPlayed = true;
             }
             this.sprite.setVelocityX(0);
+            this.sprite.body.enable = false;
+            this.sprite.z = false;
+
             return;
         }
         let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left;
@@ -243,7 +246,7 @@ export class Ninja extends Enemy {
         if (self.isDead) {
             return false;
         }
-        
+
         let player = self.game.player,
             jumpOnHead = self.sprite.body.touching.up && player.sprite.body.touching.down;
         

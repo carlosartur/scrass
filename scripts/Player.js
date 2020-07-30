@@ -198,6 +198,7 @@ export class Player {
 
         this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);
+        this.sprite.setDepth(2);
         this.configureLifeBar();
         this.turnRight();
         return this.sprite;
