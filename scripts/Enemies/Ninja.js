@@ -54,6 +54,11 @@ export class Ninja extends Enemy {
      * @type {Number}
      */
     currentHorizontalVelocity = 120;
+    
+    /**
+     * 
+     */
+    width = 250;
 
     /**
      * @param {Object} config 
@@ -219,6 +224,7 @@ export class Ninja extends Enemy {
     runLeft() {
         this.currentHorizontalVelocity = this.horizontalVelocity * -1;
         this.sprite.setFlipX(true);
+        this.sprite.setOffset(300, 100);
     }
 
     /**
@@ -227,6 +233,7 @@ export class Ninja extends Enemy {
     runRight() {
         this.currentHorizontalVelocity = this.horizontalVelocity;
         this.sprite.setFlipX(false);
+        this.sprite.setOffset(0, 100);
     }
 
     /**

@@ -199,6 +199,7 @@ export class Player {
         this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);
         this.configureLifeBar();
+        this.turnRight();
         return this.sprite;
     }
 
@@ -347,7 +348,7 @@ export class Player {
     updateDisplay(text) {
         let spriteTextDistance = 386,
             minTextBorderDistance = 16,
-            currentPosition = this.sprite.x - spriteTextDistance;
+            currentPosition = this.cameraPositionX - spriteTextDistance;
         text = text || `Score: ${this.score}`;
         this.display.setText(text);
         this.display.x = (currentPosition > minTextBorderDistance) ?
@@ -381,7 +382,7 @@ export class Player {
     updateLifeBar() {
         let spriteTextDistance = 100,
             minTextBorderDistance = 300,
-            currentPosition = this.sprite.x - spriteTextDistance;
+            currentPosition = this.cameraPositionX - spriteTextDistance;
 
         this.lifeBar.fillStyle(this.lifeBarColour, 1);
         this.lifeBar.x = (currentPosition > minTextBorderDistance) ?
@@ -406,7 +407,7 @@ export class Player {
             return false;
         }
         this.currentDirection = DIRECTIONS.LEFT;
-        this.sprite.setOffset(300, 100);
+        this.sprite.setOffset(0, -200);
         this.sprite.x -= 30;
         this.currentCameraDifferenceX = this.cameraDifferenceX;
     }
@@ -419,7 +420,7 @@ export class Player {
             return false;
         }
         this.currentDirection = DIRECTIONS.RIGHT;
-        this.sprite.setOffset(0, 100);
+        this.sprite.setOffset(200, -200);
         this.sprite.x += 30;
         this.currentCameraDifferenceX = this.cameraDifferenceX * -1;
     }
