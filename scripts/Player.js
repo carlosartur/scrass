@@ -130,6 +130,16 @@ export class Player {
     currentDirection = DIRECTIONS.RIGHT;
 
     /**
+     * @type {Number}
+     */
+    cameraDifferenceX = 30;
+
+    /**
+     * @type {Number}
+     */
+    currentCameraDifferenceX = 0;
+
+    /**
      * 
      */
     constructor() {
@@ -398,6 +408,7 @@ export class Player {
         this.currentDirection = DIRECTIONS.LEFT;
         this.sprite.setOffset(300, 100);
         this.sprite.x -= 30;
+        this.currentCameraDifferenceX = this.cameraDifferenceX;
     }
 
     /**
@@ -410,6 +421,21 @@ export class Player {
         this.currentDirection = DIRECTIONS.RIGHT;
         this.sprite.setOffset(0, 100);
         this.sprite.x += 30;
+        this.currentCameraDifferenceX = this.cameraDifferenceX * -1;
+    }
+    
+    /**
+     * @type {Number}
+     */
+    get cameraPositionX()
+    {
+        if (this.currentCameraDifferenceX > 0) {
+            this.currentCameraDifferenceX--;
+        }
+        if (this.currentCameraDifferenceX < 0) {
+            this.currentCameraDifferenceX++;
+        }
+        return Math.floor(this.sprite.x) + this.currentCameraDifferenceX;
     }
 
     get isDead() {

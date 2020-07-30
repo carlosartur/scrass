@@ -133,7 +133,8 @@ export class MasterScene extends Phaser.Scene {
      */
     update() {
         //camera
-        this.cameraDolly.x = Math.floor(this.player.sprite.x);
+        // this.cameraDolly.x = Math.floor(this.player.sprite.x);
+        this.cameraDolly.x = this.player.cameraPositionX;
         this.cameraDolly.y = Math.floor(this.player.sprite.y);
 
         this.enemiesSprites.forEach(enemy => enemy.move());
