@@ -107,7 +107,7 @@ export class Player {
     /**
      * @type {Number}
      */
-    width = 100;
+    width = 300;
 
     /**
      * @type {Number}
@@ -184,6 +184,7 @@ export class Player {
         this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);
         this.configureLifeBar();
+        this.sprite.setOffset(0, 100);
         return this.sprite;
     }
 
