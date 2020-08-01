@@ -23,8 +23,11 @@ export class MasterScene extends Phaser.Scene {
     player = null;
     cursors = null;
     platforms = null;
+    decoratives = null;
     crystals = null;
     scoreText = null;
+
+    sceneData = null;
 
     /**
      * @type {String}
@@ -59,37 +62,33 @@ export class MasterScene extends Phaser.Scene {
             .setEnviroment(this.enviroment);
 
         this.player.setGame(this);
+        let className = this.constructor.name.toLowerCase();
+        this.load.json(className, `assets/json/${className}.json`);
     }
 
     /**
-     * 
+     * @method
      */
     create() {
+        this.sceneData = this.cache.json.get(this.constructor.name.toLowerCase());
         this.createScene();
     }
 
     /**
-     * 
+     * @method
      */
     createScene() {
         let background = this.add.image(400, 350, 'sky');
         background.setScrollFactor(0.01);
 
         this.createPlatforms();
+        this.createDecoratives();
 
         this.player.configureSprites();
         this.enemiesSprites = this.createEnemies();
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.crystals = this.physics.add.group({
-            key: 'crystal',
-            repeat: intRandom(10, 60),
-            setXY: {
-                x: 12,
-                y: 0,
-                stepX: 70
-            }
-        });
+        this.crystals = this.physics.add.group(this.sceneData.crystal);
 
         //camera
         this.cameras.main.setBounds(0, 0, this.size, 480);
@@ -119,17 +118,28 @@ export class MasterScene extends Phaser.Scene {
     }
 
     /**
-     * 
+     * @method
      */
-    createPlatforms() {}
+    createPlatforms() {
+        throw new TypeError('Must implement "createPlatforms" on child class.');
+    }
 
     /**
-     * 
+     * @method
      */
-    createEnemies() {}
+    createEnemies() {
+        throw new TypeError('Must implement "createEnemies" on child class.');
+    }
 
     /**
-     * 
+     * @method
+     */
+    createDecoratives() {
+        throw new TypeError('Must implement "createDecoratives" on child class.');
+    }
+
+    /**
+     * @method
      */
     update() {
         //camera

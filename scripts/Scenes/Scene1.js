@@ -32,7 +32,7 @@ export class Scene1 extends MasterScene {
     }
 
     /**
-     * 
+     * @method
      */
     preload() {
         super.preload();
@@ -40,23 +40,36 @@ export class Scene1 extends MasterScene {
     }
 
     /**
-     * 
+     * @method
      */
     createPlatforms() {
         this.platforms = this.physics.add.staticGroup();
-        for (var i = 60; i <= this.size; i += 128) {
-            this.platforms.create(i, 540, 'ground');
-        }
+        Object.entries(this.sceneData.platforms).forEach(([key, value]) => {
+            value.forEach(value2 => this.platforms.create(value2.x, value2.y, key))
+        });
 
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 300, 'ground');
+        // this.platforms.create(600, 400, 'ground');
+        // this.platforms.create(50, 250, 'ground');
+        // this.platforms.create(750, 300, 'ground');
     }
 
     /**
      * @returns {Sprite[]}
      */
     createEnemies() {
-        return [this.masterNinja.configureSprites()];
+        let ninjas = this.sceneData.enemies.ninja.map(item =>
+            this.masterNinja.clone(item).configureSprites()
+        );
+        return [this.masterNinja.configureSprites(), ...ninjas];
+    }
+
+    /**
+     * @method
+     */
+    createDecoratives() {
+        this.decoratives = this.physics.add.staticGroup();
+        Object.entries(this.sceneData.decoratives).forEach(([key, value]) => {
+            value.forEach(value2 => this.decoratives.create(value2.x, value2.y, key))
+        });
     }
 }
