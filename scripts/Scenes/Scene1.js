@@ -47,10 +47,6 @@ export class Scene1 extends MasterScene {
         Object.entries(this.sceneData.platforms).forEach(([key, value]) => {
             value.forEach(value2 => this.platforms.create(value2.x, value2.y, key))
         });
-
-        // this.platforms.create(600, 400, 'ground');
-        // this.platforms.create(50, 250, 'ground');
-        // this.platforms.create(750, 300, 'ground');
     }
 
     /**
@@ -71,5 +67,13 @@ export class Scene1 extends MasterScene {
         Object.entries(this.sceneData.decoratives).forEach(([key, value]) => {
             value.forEach(value2 => this.decoratives.create(value2.x, value2.y, key))
         });
+    }
+
+    /**
+     * 
+     */
+    createCheckpoint() {
+        this.checkpoint = this.physics.add.staticGroup();
+        this.checkpoint.create(5000, 445, 'checkpoint');
     }
 }

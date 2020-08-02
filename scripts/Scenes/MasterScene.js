@@ -27,6 +27,9 @@ export class MasterScene extends Phaser.Scene {
     crystals = null;
     scoreText = null;
 
+    /**
+     * @type {Object} 
+     */
     sceneData = null;
 
     /**
@@ -43,6 +46,11 @@ export class MasterScene extends Phaser.Scene {
      * @type {Array}
      */
     enemiesSprites = [];
+
+    /**
+     * @type {Object}
+     */
+    checkpoint = null;
 
     /**
      * @param {EnviromentSprites} enviromentSprites 
@@ -83,6 +91,7 @@ export class MasterScene extends Phaser.Scene {
 
         this.createPlatforms();
         this.createDecoratives();
+        this.createCheckpoint();
 
         this.player.configureSprites();
         this.enemiesSprites = this.createEnemies();
@@ -101,6 +110,7 @@ export class MasterScene extends Phaser.Scene {
 
         this.physics.add.collider(this.crystals, this.platforms);
         this.physics.add.collider(this.player.sprite, this.platforms);
+        this.physics.add.overlap(this.checkpoint, this.player.sprite, this.player.checkpoint, null, this);
 
         this.enemiesSprites.forEach(enemySprite => {
             let sprite = enemySprite.sprite;
@@ -136,6 +146,13 @@ export class MasterScene extends Phaser.Scene {
      */
     createDecoratives() {
         throw new TypeError('Must implement "createDecoratives" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    createCheckpoint() {
+        throw new TypeError('Must implement "crateCheckpoint" on child class.');
     }
 
     /**
