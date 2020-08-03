@@ -58,15 +58,6 @@
             "x": 956
         }, {
             "y": 540,
-            "x": 1084
-        }, {
-            "y": 540,
-            "x": 1212
-        }, {
-            "y": 540,
-            "x": 1340
-        }, {
-            "y": 540,
             "x": 1468
         }, {
             "y": 540,
@@ -267,8 +258,14 @@
             "y": 540,
             "x": 9916
         }],
-        "ground_left": [],
-        "ground_right": [],
+        "ground_left": [{
+            "y": 540,
+            "x": 1340
+        }],
+        "ground_right": [{
+            "y": 540,
+            "x": 1084
+        }],
         "ground_mid_left": [],
         "ground_mid": [],
         "ground_mid_right": [],
@@ -288,12 +285,32 @@
             "y": 250
         }],
         "ground_bottom_right": [],
-        "water_top": [],
         "decorative_crate": [{
-            "x": 1200,
+            "x": 1500,
             "y": 438
+        }]
+    },
+    "fluid_ground" : {
+        "water_top": [{
+            "y": 540,
+            "x": 1212
+        }, {
+            "y": 540,
+            "x": 1340
+        }, {
+            "y": 540,
+            "x": 1084
         }],
-        "water_bottom": []
+        "water_bottom": [{
+            "y": 650,
+            "x": 1212
+        }, {
+            "y": 650,
+            "x": 1340
+        }, {
+            "y": 650,
+            "x": 1084
+        }]
     },
     "decoratives": {
         "decorative_bush_1": [{

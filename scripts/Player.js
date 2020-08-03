@@ -287,6 +287,14 @@ export class Player {
     /**
      * @method
      */
+    instantDie() {
+        self.life = 10;
+        self.hurt(true);
+    }
+
+    /**
+     * @method
+     */
     respawn() {
         if (this.timeDied > 1) {
             this.timeDied--;
@@ -377,8 +385,8 @@ export class Player {
     /**
      * 
      */
-    hurt() {
-        if (self.invincibility || self.idDead) {
+    hurt(forceHurt = false) {
+        if (!forceHurt && (self.invincibility || self.idDead)) {
             return;
         }
         self.life -= 10;
@@ -452,9 +460,9 @@ export class Player {
         this.lifeBar.y = 16;
 
         if (this.life > this.displayLife) {
-            this.displayLife += 0.5;
+            this.displayLife += 2;
         } else if (this.life < this.displayLife) {
-            this.displayLife -= 0.5;
+            this.displayLife -= 2;
         }
 
         this.lifeBar.scaleX = this.displayLife / this.initialLife;

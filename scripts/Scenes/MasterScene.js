@@ -7,10 +7,6 @@ import {
     Player
 } from "../Player.js";
 
-import {
-    intRandom
-} from "../Helpers.js";
-
 export class MasterScene extends Phaser.Scene {
     /**
      * @type {EnviromentSprites} enviromentSprites
@@ -24,6 +20,7 @@ export class MasterScene extends Phaser.Scene {
     cursors = null;
     platforms = null;
     decoratives = null;
+    fluidGround = null;
     crystals = null;
     scoreText = null;
 
@@ -92,6 +89,7 @@ export class MasterScene extends Phaser.Scene {
         this.createPlatforms();
         this.createDecoratives();
         this.createCheckpoint();
+        this.crateFluidGround();
 
         this.player.configureSprites();
         this.enemiesSprites = this.createEnemies();
@@ -111,6 +109,7 @@ export class MasterScene extends Phaser.Scene {
         this.physics.add.collider(this.crystals, this.platforms);
         this.physics.add.collider(this.player.sprite, this.platforms);
         this.physics.add.overlap(this.checkpoint, this.player.sprite, this.player.checkpoint, null, this);
+        this.physics.add.overlap(this.fluidGround, this.player.sprite, this.player.instantDie, null, this);
 
         this.enemiesSprites.forEach(enemySprite => {
             let sprite = enemySprite.sprite;
@@ -145,6 +144,13 @@ export class MasterScene extends Phaser.Scene {
      * @method
      */
     createDecoratives() {
+        throw new TypeError('Must implement "createDecoratives" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    crateFluidGround() {
         throw new TypeError('Must implement "createDecoratives" on child class.');
     }
 
