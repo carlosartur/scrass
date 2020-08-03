@@ -9,7 +9,9 @@ import {
     states,
     DIRECTIONS
 } from "../Player.js";
-import { MasterScene } from "../Scenes/MasterScene.js";
+import {
+    MasterScene
+} from "../Scenes/MasterScene.js";
 
 /**
  * @type {Ninja}
@@ -54,11 +56,16 @@ export class Ninja extends Enemy {
      * @type {Number}
      */
     currentHorizontalVelocity = 120;
-    
+
     /**
-     * 
+     * @type {Number}
      */
     width = 250;
+
+    /**
+     * @type {Number}
+     */
+    initialX = 300;
 
     /**
      * @param {Object} config 
@@ -115,7 +122,7 @@ export class Ninja extends Enemy {
      * @method
      */
     configureSprites() {
-        this.enemySprite = this.game.physics.add.sprite(300, 0, 'ninja_idle0');
+        this.enemySprite = this.game.physics.add.sprite(this.initialX, this.initialY, 'ninja_idle0');
 
         this.sprite.displayWidth = 60;
         this.sprite.displayHeight = 110;
@@ -192,7 +199,7 @@ export class Ninja extends Enemy {
         if (this.isMovimentOver || touchingLeft || touchingRight) {
             let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT, DIRECTIONS.UP],
                 choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
-            
+
             if (touchingLeft) {
                 choosedDirection = DIRECTIONS.RIGHT;
             }

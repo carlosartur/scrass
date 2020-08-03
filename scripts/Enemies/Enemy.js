@@ -90,6 +90,16 @@ export class Enemy extends Clonable {
     currentHorizontalVelocity = 80;
 
     /**
+     * @type {Number}
+     */
+    initialX = 0;
+
+    /**
+     * @type {Number}
+     */
+    initialY = 0;
+
+    /**
      * @method
      */
     generateTiles() {

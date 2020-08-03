@@ -26,7 +26,7 @@ let self;
 export class Player {
 
     /**
-     * @type {Array}
+     * @type {Object[]}
      */
     lifeColours = [{
         max: 120,
@@ -50,7 +50,7 @@ export class Player {
         colour: 0xf37644
     }, {
         max: 20,
-        min: -1,
+        min: -1000,
         colour: 0xdb5855
     }];
 
@@ -102,6 +102,11 @@ export class Player {
     /**
      * @type {Number}
      */
+    initialLife = 120;
+
+    /**
+     * @type {Number}
+     */
     displayLife = 0;
 
     /**
@@ -138,6 +143,21 @@ export class Player {
      * @type {Number}
      */
     currentCameraDifferenceX = 0;
+
+    /**
+     * @type {Number}
+     */
+    checkpointX = 0;
+
+    /**
+     * @type {Number}
+     */
+    lifes = 3;
+
+    /**
+     * @type {Number}
+     */
+    timeDied = 0;
 
     /**
      * 
@@ -211,15 +231,20 @@ export class Player {
         this.updateLifeBar();
         this.decreaseInvencibility();
 
-        if (this.isDead) {
-            if (!this.deadAnimationPlayed) {
-                this.sprite.anims.play(states.DEAD, true);
-                this.deadAnimationPlayed = true;
-            }
-            this.sprite.setVelocityX(0);
-            this.updateDisplay('GAME OVER!');
+        if (!this.lifes) {
             return;
         }
+
+        if (this.timeDied) {
+            this.respawn();
+            return;
+        }
+
+        if (this.isDead) {
+            this.die();
+            return;
+        }
+
         this.updateDisplay();
         let horizontalVelocity = 80;
         let run = false;
@@ -241,6 +266,38 @@ export class Player {
             return this.walkRight(horizontalVelocity, run, jumping);
         }
         this.idle(jumping);
+    }
+
+    /**
+     * @method
+     */
+    die() {
+        if (!this.deadAnimationPlayed) {
+            this.sprite.anims.play(states.DEAD, true);
+            this.deadAnimationPlayed = true;
+            this.lifes--;
+            this.timeDied = 125;
+        }
+        this.sprite.setVelocityX(0);
+        if (!this.lifes) {
+            this.updateDisplay('GAME OVER!');
+        }
+    }
+
+    /**
+     * @method
+     */
+    respawn() {
+        if (this.timeDied > 1) {
+            this.timeDied--;
+            return;
+        }
+        this.timeDied = 0;
+        this.sprite.x = this.checkpointX || 100;
+        this.sprite.y = 0;
+        this.life = this.initialLife;
+        this.deadAnimationPlayed = false;
+        return;
     }
 
     /**
@@ -349,8 +406,11 @@ export class Player {
     updateDisplay(text) {
         let spriteTextDistance = 386,
             minTextBorderDistance = 16,
-            currentPosition = this.cameraPositionX - spriteTextDistance;
-        text = text || `Score: ${this.score}`;
+            currentPosition = this.cameraPositionX - spriteTextDistance,
+            spaces = 7 - String(this.score).length,
+            lifeSpaces = 2 - String(this.lifes).length;
+
+        text = text || `Score:${' '.repeat(spaces)}${this.score}${' '.repeat(15)}Lifes:${' '.repeat(lifeSpaces)}${this.lifes}`;
         this.display.setText(text);
         this.display.x = (currentPosition > minTextBorderDistance) ?
             currentPosition :
@@ -397,7 +457,7 @@ export class Player {
             this.displayLife -= 0.5;
         }
 
-        this.lifeBar.scaleX = this.displayLife / 120;
+        this.lifeBar.scaleX = this.displayLife / this.initialLife;
     }
 
     /**
@@ -425,12 +485,19 @@ export class Player {
         this.sprite.x += 30;
         this.currentCameraDifferenceX = this.cameraDifferenceX * -1;
     }
-    
+
+    /**
+     * @method 
+     */
+    checkpoint(playerSprite, checkpointSprite) {
+        checkpointSprite.disableBody(true, true);
+        self.checkpointX = Math.floor(playerSprite.x);
+    }
+
     /**
      * @type {Number}
      */
-    get cameraPositionX()
-    {
+    get cameraPositionX() {
         if (this.currentCameraDifferenceX > 0) {
             this.currentCameraDifferenceX--;
         }

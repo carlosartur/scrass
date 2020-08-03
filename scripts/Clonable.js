@@ -1,10 +1,10 @@
 export class Clonable {
-    
+
     /**
      * 
      */
     __class = null;
-    
+
     /**
      * @param {Object} obj 
      */
@@ -16,8 +16,10 @@ export class Clonable {
     /**
      * @method
      */
-    clone() {
-        return new this.__class(this);
+    clone(config = {}) {
+        let clone = new this.__class(this);
+        Object.assign(clone, this, config);
+        return clone;
     }
 
     /**
