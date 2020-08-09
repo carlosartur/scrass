@@ -218,6 +218,7 @@ export class Player {
 
         this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);
+        this.sprite.setDepth(2);
         this.configureLifeBar();
         this.turnRight();
         return this.sprite;
@@ -281,6 +282,14 @@ export class Player {
         if (!this.lifes) {
             this.updateDisplay('GAME OVER!');
         }
+    }
+
+    /**
+     * @method
+     */
+    instantDie() {
+        self.life = 10;
+        self.hurt(true);
     }
 
     /**
@@ -376,8 +385,8 @@ export class Player {
     /**
      * 
      */
-    hurt() {
-        if (self.invincibility || self.idDead) {
+    hurt(forceHurt = false) {
+        if (!forceHurt && (self.invincibility || self.idDead)) {
             return;
         }
         self.life -= 10;
@@ -451,9 +460,9 @@ export class Player {
         this.lifeBar.y = 16;
 
         if (this.life > this.displayLife) {
-            this.displayLife += 0.5;
+            this.displayLife += 2;
         } else if (this.life < this.displayLife) {
-            this.displayLife -= 0.5;
+            this.displayLife -= 2;
         }
 
         this.lifeBar.scaleX = this.displayLife / this.initialLife;
