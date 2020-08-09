@@ -7,10 +7,6 @@ import {
     Player
 } from "../Player.js";
 
-import {
-    intRandom
-} from "../Helpers.js";
-
 export class MasterScene extends Phaser.Scene {
     /**
      * @type {EnviromentSprites} enviromentSprites
