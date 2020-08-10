@@ -286,6 +286,10 @@
         }],
         "ground_bottom_right": [],
         "decorative_crate": [{
+            "x": 1000,
+            "y": 438
+        },
+        {
             "x": 1500,
             "y": 438
         }]

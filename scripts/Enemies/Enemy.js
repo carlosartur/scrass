@@ -100,6 +100,11 @@ export class Enemy extends Clonable {
     initialY = 0;
 
     /**
+     * @type {Boolean}
+     */
+    alreadyTouchGround = false;
+
+    /**
      * @method
      */
     generateTiles() {

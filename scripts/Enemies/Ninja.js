@@ -13,10 +13,7 @@ import {
     MasterScene
 } from "../Scenes/MasterScene.js";
 
-/**
- * @type {Ninja}
- */
-let self = null;
+let ninjas = {};
 
 export class Ninja extends Enemy {
 
@@ -66,6 +63,11 @@ export class Ninja extends Enemy {
      * @type {Number}
      */
     initialX = 300;
+    
+    /**
+     * @type {Number}
+     */
+    id = 0;
 
     /**
      * @param {Object} config 
@@ -77,8 +79,16 @@ export class Ninja extends Enemy {
             this.setGame(game);
         }
         this.init();
+    }
 
-        self = this;
+    /**
+     * 
+     */
+    generateId() {
+        while (!this.id || ninjas[this.id]) {
+            this.id = intRandom(1, 1000);
+        }
+        ninjas[this.id] = this;
     }
 
     /**
@@ -126,7 +136,10 @@ export class Ninja extends Enemy {
 
         this.sprite.displayWidth = 60;
         this.sprite.displayHeight = 110;
-
+        
+        this.generateId();
+        this.sprite.ownerId = this.id;
+        
         this.sprite.setBounce(0.2);
         this.createAnims();
         this.playAnimation();
@@ -182,6 +195,17 @@ export class Ninja extends Enemy {
      * 
      */
     move() {
+        let isFirstGroundTouch = false;
+        if ((!this.alreadyTouchGround) && this.sprite.body.touching.down) {
+            isFirstGroundTouch = true;
+            this.alreadyTouchGround = true;
+        }
+
+        if (!this.alreadyTouchGround) {
+            this.sprite.setVelocityX(0);
+            return;
+        }
+
         if (this.isDead) {
             if (!this.deadAnimationPlayed) {
                 this.playAnimation(states.DEAD);
@@ -193,10 +217,11 @@ export class Ninja extends Enemy {
 
             return;
         }
+
         let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left;
         let touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
 
-        if (this.isMovimentOver || touchingLeft || touchingRight) {
+        if (this.isMovimentOver || touchingLeft || touchingRight || isFirstGroundTouch) {
             let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT, DIRECTIONS.UP],
                 choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
 
@@ -249,14 +274,16 @@ export class Ninja extends Enemy {
     /**
      * @method
      */
-    touchPlayer() {
+    touchPlayer(ninja, playerSprite) {
+        let selfId = ninja.ownerId,
+            self = ninjas[selfId];
+
         if (self.isDead) {
             return false;
         }
 
         let player = self.game.player,
             jumpOnHead = self.sprite.body.touching.up && player.sprite.body.touching.down;
-        
         if (jumpOnHead) {
             player.jump();
             self.hurt();
