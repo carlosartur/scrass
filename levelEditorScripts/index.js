@@ -113,7 +113,7 @@ const makeTilesOptions = (images, selectedEnviroment) => {
     for (let name in imagePaths) {
         let src = imagePaths[name],
             $imgTag = $(`<div class="tileContainer">
-                <img src="/assets/images/enviroment${enviromentPath}${src}" 
+                <img src="./assets/images/enviroment${enviromentPath}${src}" 
                     class="${name} tile" 
                     data-tile-name="${name}" 
                     data-tile-type="${tilesTypes[selectedEnviroment][name]}"
@@ -135,10 +135,10 @@ const keyBindigs = event => {
     x: Deletes the last clicked tile
     g: Generate final JSON file to include on the game
     c: Clean the cursor, to stop to insert elements every click
-    8: Moves the last clicked tile UP
-    2: Moves the last clicked tile DOWN
-    4: Moves the last clicked tile LEFT
-    6: Moves the last clicked tile RIGHT `);
+    i: Moves the last clicked tile UP
+    k: Moves the last clicked tile DOWN
+    j: Moves the last clicked tile LEFT
+    l: Moves the last clicked tile RIGHT `);
             },
             'r': function () {
                 currentSelectedElement = currentSelectedElement.clone();
@@ -166,7 +166,7 @@ const keyBindigs = event => {
             'c': function () {
                 currentSelectedElement = null;
             },
-            '8': function () {
+            'i': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.y--;
                 currentPositionedElement.css({
@@ -180,7 +180,7 @@ const keyBindigs = event => {
                     x: position.x
                 }));
             },
-            '2': function () {
+            'k': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.y++;
                 currentPositionedElement.css({
@@ -194,7 +194,7 @@ const keyBindigs = event => {
                     x: position.x
                 }));
             },
-            '4': function () {
+            'j': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.x--;
                 currentPositionedElement.css({
@@ -208,7 +208,7 @@ const keyBindigs = event => {
                     x: position.x
                 }));
             },
-            '6': function () {
+            'l': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.x++;
                 currentPositionedElement.css({
