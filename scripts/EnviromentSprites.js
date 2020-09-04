@@ -142,7 +142,6 @@ export class EnviromentSprites {
         for (var i in images) {
             this.game.load.image(i, `${this.imagesPath}${enviromentPath}${images[i]}`);
         }
-        console.log(`${this.crystalSpritePrefix}${crystalColour}.png`);
         this.game.load.spritesheet('crystal', `${this.crystalSpritePrefix}${crystalColour}.png`, {
             frameWidth: 32,
             frameHeight: 32

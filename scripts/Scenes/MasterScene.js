@@ -95,15 +95,25 @@ export class MasterScene extends Phaser.Scene {
         this.enemiesSprites = this.createEnemies();
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.crystals = this.physics.add.group(this.sceneData.crystal);
 
         //camera
         this.cameras.main.setBounds(0, 0, this.size, 480);
         this.cameraDolly = new Phaser.Geom.Point(this.player.sprite.x, this.player.sprite.y);
         this.cameras.main.startFollow(this.cameraDolly);
 
+        this.crystals = this.physics.add.group(this.sceneData.crystal);
+        this.game.anims.create({
+            key: 'crystal',
+            frames: this.game.anims.generateFrameNumbers('crystal', {
+                start: 0,
+                end: 9
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
         this.crystals.children.iterate(function (child) {
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.5));
+            child.anims.play('crystal', true);
         });
 
         this.physics.add.collider(this.crystals, this.platforms);

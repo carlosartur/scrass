@@ -85,7 +85,6 @@ $(document).ready(function () {
                 y: relY,
                 x: relX
             };
-
         currentSelectedElement.css({
             'position': 'absolute',
             'top': relY,
@@ -93,16 +92,20 @@ $(document).ready(function () {
         });
 
         currentSelectedElement.attr('data-pos', JSON.stringify(positions));
-
-        if (!currentSelectedElement.attr('id')) {
-            currentSelectedElement.attr('id', (new Date()).getTime());
+        let id = currentSelectedElement.attr('id');
+        if (!id) {
+            id = (new Date()).getTime();
+            currentSelectedElement.attr('id', id);
         }
+        $(this).append(currentSelectedElement);
+
+        positions.y += $(`#${id}`).height() / 2;
+        positions.x += $(`#${id}`).width() / 2;
 
         tilesPositions[currentSelectedElement.attr('id')] = positions;
 
         currentSelectedElement.addClass('positioned');
         currentPositionedElement = currentSelectedElement;
-        $(this).append(currentSelectedElement);
     });
 });
 
@@ -128,17 +131,20 @@ const keyBindigs = event => {
         actions = {
             'h': function () {
                 alert(`Help
-    To use this editor, select a enviroment, click on a tile and click on the position it must be on game.
-    Key bindings(ALT+):
-    r: Fix the position of the last inserted tile
-    h: Show this modal again
-    x: Deletes the last clicked tile
-    g: Generate final JSON file to include on the game
-    c: Clean the cursor, to stop to insert elements every click
-    i: Moves the last clicked tile UP
-    k: Moves the last clicked tile DOWN
-    j: Moves the last clicked tile LEFT
-    l: Moves the last clicked tile RIGHT `);
+                    To use this editor, select a enviroment, click on a tile and click on the position it must be on game.
+                    Key bindings(ALT+):
+                    r: Fix the position of the last inserted tile
+                    h: Show this modal again
+                    x: Deletes the last clicked tile
+                    l: Load or reload stage json
+                    m: Generate generic floor
+                    g: Generate final JSON file to include on the game
+                    c: Clean the cursor, to stop to insert elements every click
+                    k: Moves the last clicked tile UP
+                    ,: Moves the last clicked tile DOWN
+                    m: Moves the last clicked tile LEFT
+                    .: Moves the last clicked tile RIGHT
+                    `.split(' '.repeat(20)).join(' '.repeat(4)));
             },
             'r': function () {
                 currentSelectedElement = currentSelectedElement.clone();
@@ -158,7 +164,7 @@ const keyBindigs = event => {
                     finalObj[tileType][tileName] = finalObj[tileType][tileName] || [];
                     finalObj[tileType][tileName].push(position);
                 });
-                $("#finaljson").html(JSON.stringify(finalObj, null, 4));
+                $("#finaljson").val(JSON.stringify(finalObj, null, 4));
             },
             'Alt': function () {
                 return true;
@@ -166,13 +172,13 @@ const keyBindigs = event => {
             'c': function () {
                 currentSelectedElement = null;
             },
-            'i': function () {
+            'k': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.y--;
                 currentPositionedElement.css({
                     'position': 'absolute',
-                    'top': position.y,
-                    'left': position.x
+                    'top': (position.y - (currentPositionedElement.height() / 2)),
+                    'left': (position.x - (currentPositionedElement.width() / 2))
                 });
 
                 currentPositionedElement.attr('data-pos', JSON.stringify({
@@ -180,13 +186,13 @@ const keyBindigs = event => {
                     x: position.x
                 }));
             },
-            'k': function () {
+            ',': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.y++;
                 currentPositionedElement.css({
                     'position': 'absolute',
-                    'top': position.y,
-                    'left': position.x
+                    'top': (position.y - (currentPositionedElement.height() / 2)),
+                    'left': (position.x - (currentPositionedElement.width() / 2))
                 });
 
                 currentPositionedElement.attr('data-pos', JSON.stringify({
@@ -194,13 +200,27 @@ const keyBindigs = event => {
                     x: position.x
                 }));
             },
-            'j': function () {
+            'm': function () {
                 let position = tilesPositions[currentSelectedElement.attr('id')];
                 position.x--;
                 currentPositionedElement.css({
                     'position': 'absolute',
-                    'top': position.y,
-                    'left': position.x
+                    'top': (position.y - (currentPositionedElement.height() / 2)),
+                    'left': (position.x - (currentPositionedElement.width() / 2))
+                });
+
+                currentPositionedElement.attr('data-pos', JSON.stringify({
+                    y: position.y,
+                    x: position.x
+                }));
+            },
+            '.': function () {
+                let position = tilesPositions[currentSelectedElement.attr('id')];
+                position.x++;
+                currentPositionedElement.css({
+                    'position': 'absolute',
+                    'top': (position.y - (currentPositionedElement.height() / 2)),
+                    'left': (position.x - (currentPositionedElement.width() / 2))
                 });
 
                 currentPositionedElement.attr('data-pos', JSON.stringify({
@@ -209,18 +229,63 @@ const keyBindigs = event => {
                 }));
             },
             'l': function () {
-                let position = tilesPositions[currentSelectedElement.attr('id')];
-                position.x++;
-                currentPositionedElement.css({
-                    'position': 'absolute',
-                    'top': position.y,
-                    'left': position.x
-                });
+                try {
+                    let json = $("#finaljson").val(),
+                        object = JSON.parse(json);
+                    Object.entries(object).forEach(([typeName, type]) => {
+                        if (['crystal', 'enemies'].includes(typeName)) {
+                            return true;
+                        }
+                        Object.entries(type).forEach(([tile, positions]) => {
+                            const $masterTile = $(`.${tile}`).not('.positioned').first();
+                            positions.forEach(position => {
+                                let relX = position.x,
+                                    relY = position.y,
+                                    $insertTile = $masterTile.clone();
+                                $insertTile.css({
+                                    'position': 'absolute',
+                                    'top': relY - $masterTile.height() / 2,
+                                    'left': relX - $masterTile.width() / 2
+                                });
 
-                currentPositionedElement.attr('data-pos', JSON.stringify({
-                    y: position.y,
-                    x: position.x
-                }));
+                                $insertTile.attr('data-pos', JSON.stringify(position));
+                                let id = $insertTile.attr('id');
+                                if (!id) {
+                                    id = (new Date()).getTime();
+                                    $insertTile.attr('id', id);
+                                }
+                                $insertTile.addClass("positioned");
+                                $("#level").append($insertTile);
+
+                                positions.y += $(`#${id}`).height() / 2;
+                                positions.x += $(`#${id}`).width() / 2;
+
+                                tilesPositions[$insertTile.attr('id')] = position;
+                            });
+                        });
+                    });
+                } catch (error) {
+                    alert('error trying to load json data');
+                    console.error(error);
+                }
+            },
+            'm': function () {
+                let defaultPosition = {
+                        y: 538,
+                        x: 62
+                    },
+                    object = {
+                        platforms: {
+                            ground: []
+                        }
+                    },
+                    $masterTile = $('.ground').not('.positioned').first();
+                do {
+                    object.platforms.ground.push(Object.assign({}, defaultPosition));
+                    defaultPosition.x += $masterTile.width();
+                } while (defaultPosition.x < $("#level").width());
+                $('#finaljson').val(JSON.stringify(object, null, 4));
+                this.l();
             }
         },
         callback = actions[key] || actions['h'];
