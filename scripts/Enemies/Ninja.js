@@ -63,7 +63,7 @@ export class Ninja extends Enemy {
      * @type {Number}
      */
     initialX = 300;
-    
+
     /**
      * @type {Number}
      */
@@ -136,10 +136,10 @@ export class Ninja extends Enemy {
 
         this.sprite.displayWidth = 60;
         this.sprite.displayHeight = 110;
-        
+
         this.generateId();
         this.sprite.ownerId = this.id;
-        
+
         this.sprite.setBounce(0.2);
         this.createAnims();
         this.playAnimation();
@@ -192,7 +192,7 @@ export class Ninja extends Enemy {
     }
 
     /**
-     * 
+     * @method
      */
     move() {
         let isFirstGroundTouch = false;

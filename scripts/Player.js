@@ -250,11 +250,11 @@ export class Player {
         let run = false;
         let jumping = !this.sprite.body.touching.down;
 
-        if (cursors.shift.isDown) {
+        if (cursors.shift.isDown || cursors.z.isDown) {
             run = true;
         }
 
-        if (cursors.up.isDown || cursors.space.isDown) {
+        if (cursors.up.isDown || cursors.space.isDown || cursors.x.isDown) {
             this.jump(jumping);
         }
 
