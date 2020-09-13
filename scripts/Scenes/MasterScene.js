@@ -60,8 +60,8 @@ export class MasterScene extends Phaser.Scene {
      * @param {EnviromentSprites} enviromentSprites 
      * @param {Player} player
      */
-    constructor(enviromentSprites, player) {
-        super('SceneMain');
+    constructor(enviromentSprites, player, sceneName) {
+        super(sceneName);
         this.enviromentSprites = enviromentSprites;
         this.player = player;
     }
@@ -139,10 +139,17 @@ export class MasterScene extends Phaser.Scene {
         this.physics.add.overlap(this.fluidGround, this.player.sprite, this.player.instantDie, null, this);
 
         this.enemiesSprites.forEach(enemySprite => {
-            let sprite = enemySprite.sprite;
+            let sprite = enemySprite.sprite,
+                colliderCallback = () => {
+                    try {
+                        enemySprite.touchPlayer();
+                    } catch (error) {
+                        console.error();
+                    }
+                };
             this.physics.add.collider(sprite, this.platforms);
-            this.physics.add.collider(sprite, this.player.sprite, enemySprite.touchPlayer);
-            this.physics.add.overlap(this.player.sprite, sprite, enemySprite.touchPlayer, enemySprite, this);
+            this.physics.add.collider(sprite, this.player.sprite, colliderCallback);
+            this.physics.add.overlap(sprite, this.player.sprite, colliderCallback);
         }, this);
 
         this.scoreText = this.add.text(16, 16, 'Score: 0', {
@@ -152,12 +159,11 @@ export class MasterScene extends Phaser.Scene {
         this.player.setDisplay(this.scoreText);
         this.physics.add.overlap(this.player.sprite, this.crystals, this.player.collectCrystal, null, this);
 
-        this.pausedText = this.add.text(160, 160, 'Paused', {
+        this.pausedText = this.add.text(160, 80, 'Paused', {
             fontSize: '100px',
             fill: '#000'
         });
         this.pausedText.setVisible(false);
-        this.pausedText.setZ(10);
     }
 
     /**
@@ -236,10 +242,11 @@ export class MasterScene extends Phaser.Scene {
         if (this.pausedDelay > 0) {
             return;
         }
+        let pausedTextX = this.cameraDolly.x - 240 < 0 ? 240 : this.cameraDolly.x - 240;
         this.paused = !this.paused;
         this.pausedText.setVisible(this.paused);
-        let pausedTextX = this.cameraDolly.x - 240 < 0 ? 240 : this.cameraDolly.x - 240;
         this.pausedText.setX(pausedTextX);
+        this.pausedText.setZ(0);
         this.pausedDelay = 25;
         this.pauseAction();
     }

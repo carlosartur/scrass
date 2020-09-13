@@ -13,8 +13,6 @@ import {
     MasterScene
 } from "../Scenes/MasterScene.js";
 
-let ninjas = {};
-
 export class Ninja extends Enemy {
 
     /**
@@ -82,16 +80,6 @@ export class Ninja extends Enemy {
     }
 
     /**
-     * 
-     */
-    generateId() {
-        while (!this.id || ninjas[this.id]) {
-            this.id = intRandom(1, 1000);
-        }
-        ninjas[this.id] = this;
-    }
-
-    /**
      * @method
      */
     init() {
@@ -136,9 +124,6 @@ export class Ninja extends Enemy {
 
         this.sprite.displayWidth = 60;
         this.sprite.displayHeight = 110;
-
-        this.generateId();
-        this.sprite.ownerId = this.id;
 
         this.sprite.setBounce(0.2);
         this.createAnims();
@@ -274,19 +259,16 @@ export class Ninja extends Enemy {
     /**
      * @method
      */
-    touchPlayer(ninja, playerSprite) {
-        let selfId = ninja.ownerId,
-            self = ninjas[selfId];
-
-        if (self.isDead) {
+    touchPlayer() {
+        if (this.isDead) {
             return false;
         }
 
-        let player = self.game.player,
-            jumpOnHead = self.sprite.body.touching.up && player.sprite.body.touching.down;
+        let player = this.game.player,
+            jumpOnHead = this.sprite.body.touching.up && player.sprite.body.touching.down;
         if (jumpOnHead) {
             player.jump();
-            self.hurt();
+            this.hurt();
             return;
         }
         player.hurt();

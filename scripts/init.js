@@ -10,10 +10,14 @@ import {
     Scene1
 } from './Scenes/Scene1.js';
 
-var enviromentSprites = new EnviromentSprites(),
-    player = new Player();
+import {
+    StartScreenScene
+} from './Scenes/StartScreenScene.js';
 
-var scene = new Scene1(enviromentSprites, player);
+var enviromentSprites = new EnviromentSprites(),
+    player = new Player(),
+    startScreenScene = new StartScreenScene(),
+    scene1 = new Scene1(enviromentSprites, player);
 
 const config = {
     type: Phaser.AUTO,
@@ -29,13 +33,14 @@ const config = {
             }
         }
     },
-    scene
+    scene: [startScreenScene, scene1]
 };
 
 var game = new Phaser.Game(config);
 
 window.myDebug = {
-    scene,
+    startScreenScene,
+    scene1,
     config,
     game,
     enviromentSprites,

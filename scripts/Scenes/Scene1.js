@@ -27,7 +27,7 @@ export class Scene1 extends MasterScene {
      * @param {Player} player 
      */
     constructor(enviromentSprites, player) {
-        super(enviromentSprites, player);
+        super(enviromentSprites, player, "Scene1");
         this.masterNinja = new Ninja();
     }
 
