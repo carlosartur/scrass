@@ -56,6 +56,9 @@ export class MasterScene extends Phaser.Scene {
     /** @type {Object} */
     checkpoint = null;
 
+    /** @type {Object} */
+    endOfStage = null;
+
     /**
      * @param {EnviromentSprites} enviromentSprites 
      * @param {Player} player
@@ -97,6 +100,7 @@ export class MasterScene extends Phaser.Scene {
         this.createDecoratives();
         this.createCheckpoint();
         this.crateFluidGround();
+        this.createEndStage();
 
         this.player.configureSprites();
         this.enemiesSprites = this.createEnemies();
@@ -128,6 +132,7 @@ export class MasterScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+
         this.crystals.children.iterate(function (child) {
             child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.5));
             child.anims.play('crystal', true);
@@ -137,6 +142,9 @@ export class MasterScene extends Phaser.Scene {
         this.physics.add.collider(this.player.sprite, this.platforms);
         this.physics.add.overlap(this.checkpoint, this.player.sprite, this.player.checkpoint, null, this);
         this.physics.add.overlap(this.fluidGround, this.player.sprite, this.player.instantDie, null, this);
+        this.physics.add.overlap(this.endOfStage, this.player.sprite, (() => {
+            this.callNextStage();
+        }).bind(this), null, this);
 
         this.enemiesSprites.forEach(enemySprite => {
             let sprite = enemySprite.sprite,
@@ -164,41 +172,6 @@ export class MasterScene extends Phaser.Scene {
             fill: '#000'
         });
         this.pausedText.setVisible(false);
-    }
-
-    /**
-     * @method
-     */
-    createPlatforms() {
-        throw new TypeError('Must implement "createPlatforms" on child class.');
-    }
-
-    /**
-     * @method
-     */
-    createEnemies() {
-        throw new TypeError('Must implement "createEnemies" on child class.');
-    }
-
-    /**
-     * @method
-     */
-    createDecoratives() {
-        throw new TypeError('Must implement "createDecoratives" on child class.');
-    }
-
-    /**
-     * @method
-     */
-    crateFluidGround() {
-        throw new TypeError('Must implement "createDecoratives" on child class.');
-    }
-
-    /**
-     * @method
-     */
-    createCheckpoint() {
-        throw new TypeError('Must implement "crateCheckpoint" on child class.');
     }
 
     /**
@@ -265,5 +238,54 @@ export class MasterScene extends Phaser.Scene {
         this.physics.resume();
         this.player.sprite.anims.resume();
         return;
+    }
+
+    /**
+     * @method
+     */
+    createPlatforms() {
+        throw new TypeError('Must implement "createPlatforms" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    createEnemies() {
+        throw new TypeError('Must implement "createEnemies" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    createDecoratives() {
+        throw new TypeError('Must implement "createDecoratives" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    crateFluidGround() {
+        throw new TypeError('Must implement "createDecoratives" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    createCheckpoint() {
+        throw new TypeError('Must implement "crateCheckpoint" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    createEndStage() {
+        throw new TypeError('Must implement "createEndStage" on child class.');
+    }
+
+    /**
+     * @method
+     */
+    callNextStage() {
+        throw new TypeError('Must implement "callNextStage" on child class.');
     }
 }

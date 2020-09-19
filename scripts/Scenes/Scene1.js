@@ -83,10 +83,30 @@ export class Scene1 extends MasterScene {
     }
 
     /**
-     * 
+     * @method
      */
     createCheckpoint() {
         this.checkpoint = this.physics.add.staticGroup();
         this.checkpoint.create(5000, 445, 'checkpoint');
+    }
+
+    /**
+     * @method
+     */
+    createEndStage() {
+        this.endOfStage = this.physics.add.staticGroup();
+        this.endOfStage.create(10100, 445, 'end_of_stage');
+        let invisibleSprites = [380, 315, 250, 185, 120, 55, -10];
+        invisibleSprites.forEach(item => {
+            let invisibleSprite = this.endOfStage.create(10100, item, 'end_of_stage');
+            invisibleSprite.setVisible(false);
+        }, this);
+    }
+
+    /**
+     * @method
+     */
+    callNextStage() {
+        this.scene.start("Scene2");
     }
 }
