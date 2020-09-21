@@ -160,7 +160,12 @@ export class Player {
     timeDied = 0;
 
     /**
-     * 
+     * @type {Boolean}
+     */
+    spritesLoaded = false;
+
+    /**
+     * @constructor
      */
     constructor() {
         for (let key in states) {
@@ -194,27 +199,33 @@ export class Player {
      * Configure the sprites of the player
      */
     configureSprites() {
-        this.playerSprite = this.game.physics.add.sprite(100, 0, 'idle0');
+        if (!this.sprite) {
+            this.playerSprite = this.game.physics.add.sprite(100, 0, 'idle0');
+        }
 
         this.sprite.displayWidth = 60;
         this.sprite.displayHeight = 110;
 
         this.sprite.setBounce(0.2);
-        for (let state in this.tiles) {
-            const imageFrames = this.tiles[state];
-            let repeat = -1;
-            if ([states.DEAD, states.JUMP].includes(state)) {
-                repeat = 0;
+
+        if (!this.spritesLoaded) {
+            for (let state in this.tiles) {
+                const imageFrames = this.tiles[state];
+                let repeat = -1;
+                if ([states.DEAD, states.JUMP].includes(state)) {
+                    repeat = 0;
+                }
+                this.game.anims.create({
+                    key: state,
+                    frames: Object.keys(imageFrames).map(key => ({
+                        key
+                    })),
+                    frameRate: 10,
+                    repeat
+                });
             }
-            this.game.anims.create({
-                key: state,
-                frames: Object.keys(imageFrames).map(key => ({
-                    key
-                })),
-                frameRate: 10,
-                repeat
-            });
         }
+        this.spritesLoaded = true;
 
         this.sprite.anims.play(states.IDLE);
         this.sprite.setSize(this.width, this.heigth);

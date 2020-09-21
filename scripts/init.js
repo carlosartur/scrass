@@ -11,13 +11,18 @@ import {
 } from './Scenes/Scene1.js';
 
 import {
+    Scene2
+} from './Scenes/Scene2.js';
+
+import {
     StartScreenScene
 } from './Scenes/StartScreenScene.js';
 
-var enviromentSprites = new EnviromentSprites(),
+var enviromentSpritesDefault = new EnviromentSprites(),
     player = new Player(),
     startScreenScene = new StartScreenScene(),
-    scene1 = new Scene1(enviromentSprites, player);
+    scene1 = new Scene1(enviromentSpritesDefault, player),
+    scene2 = new Scene2(enviromentSpritesDefault, player);
 
 const config = {
     type: Phaser.AUTO,
@@ -33,7 +38,7 @@ const config = {
             }
         }
     },
-    scene: [startScreenScene, scene1]
+    scene: [startScreenScene, scene1, scene2]
 };
 
 var game = new Phaser.Game(config);
@@ -41,8 +46,9 @@ var game = new Phaser.Game(config);
 window.myDebug = {
     startScreenScene,
     scene1,
+    scene2,
     config,
     game,
-    enviromentSprites,
+    enviromentSpritesDefault,
     player
 };
