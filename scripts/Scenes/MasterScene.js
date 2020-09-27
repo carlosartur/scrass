@@ -62,6 +62,12 @@ export class MasterScene extends Phaser.Scene {
     /** @type {Boolean} */
     created = false;
 
+    /** @type {Boolean} */
+    gamepadAlreadyDetected = false;
+
+    /** @type {Gamepad} */
+    gamePad = null;
+
     /**
      * @param {EnviromentSprites} enviromentSprites 
      * @param {Player} player
@@ -184,6 +190,14 @@ export class MasterScene extends Phaser.Scene {
      * @method
      */
     update() {
+        if (
+            !this.gamepadAlreadyDetected &&
+            this.input.gamepad &&
+            this.input.gamepad.pad1
+        ) {
+            this.gamePad = this.input.gamepad.pad1;
+        }
+
         //camera
         this.cameraDolly.x = this.player.cameraPositionX;
         this.cameraDolly.y = Math.floor(this.player.sprite.y);
@@ -191,6 +205,15 @@ export class MasterScene extends Phaser.Scene {
 
         if (this.cursors.p.isDown) {
             this.togglePause();
+        }
+
+        if (this.gamepadAlreadyDetected) {
+            let buttons = this.gamePad.buttons,
+                startButton = buttons[9];
+
+            if (startButton && startButton.value) {
+                this.togglePause();
+            }
         }
 
         this.enemiesSprites.forEach(enemy => enemy.move());

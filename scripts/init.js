@@ -38,6 +38,9 @@ const config = {
             }
         }
     },
+    input: {
+        gamepad: true
+    },
     scene: [startScreenScene, scene1, scene2]
 };
 

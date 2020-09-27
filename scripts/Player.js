@@ -25,9 +25,7 @@ let self;
 
 export class Player {
 
-    /**
-     * @type {Object[]}
-     */
+    /** @type {Object[]} */
     lifeColours = [{
         max: 120,
         min: 100,
@@ -54,115 +52,74 @@ export class Player {
         colour: 0xdb5855
     }];
 
-    /**
-     * @type {String} 
-     */
+    /** @type {String} */
     state = states.IDLE;
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     deadAnimationPlayed = false;
 
-    /**
-     * @type {MasterScene}
-     */
+    /** @type {MasterScene} */
     game = null;
 
-    /**
-     * @type {String}
-     */
+    /** @type {String} */
     imagesPath = "assets/images/sprites/flatboy/png";
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     tiles = {};
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     playerSprite = null;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     score = 0;
 
-    /**
-     * @type {Any}
-     */
+    /** @type {Any} */
     display = null;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     life = 120;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     initialLife = 120;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     displayLife = 0;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     width = 300;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     heigth = 400;
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     lifeBar = null;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     invincibility = 0;
 
-    /**
-     * @type {String} 
-     */
+    /** @type {String} */
     currentDirection = DIRECTIONS.RIGHT;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     cameraDifferenceX = 30;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     currentCameraDifferenceX = 0;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     checkpointX = 0;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     lifes = 3;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     timeDied = 0;
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     spritesLoaded = false;
+
+    /** @type {Object} */
+    cursors = null;
 
     /**
      * @constructor
@@ -234,9 +191,10 @@ export class Player {
     }
 
     /**
-     * @param {*} cursors 
+     * @param {Object} cursors 
      */
     move(cursors) {
+        this.cursors = cursors;
         this.updateLifeBar();
         this.decreaseInvencibility();
 
@@ -259,22 +217,66 @@ export class Player {
         let run = false;
         let jumping = !this.sprite.body.touching.down;
 
-        if (cursors.shift.isDown || cursors.z.isDown) {
+        if (this.runPressed) {
             run = true;
         }
 
-        if (cursors.up.isDown || cursors.space.isDown || cursors.x.isDown) {
+        if (this.jumpPressed) {
             this.jump(jumping);
         }
 
-        if (cursors.left.isDown) {
+        if (this.leftPressed) {
             return this.walkLeft(horizontalVelocity, run, jumping);
         }
 
-        if (cursors.right.isDown) {
+        if (this.rightPressed) {
             return this.walkRight(horizontalVelocity, run, jumping);
         }
         this.idle(jumping);
+    }
+
+    /** 
+     * @getter
+     * @type {Boolean}
+     */
+    get runPressed() {
+        if (this.game.gamePad && (this.game.gamePad.X || this.game.gamePad.Y)) {
+            return true;
+        }
+        return this.cursors.shift.isDown || this.cursors.z.isDown;
+    }
+
+    /** 
+     * @getter
+     * @type {Boolean}
+     */
+    get jumpPressed() {
+        if (this.game.gamePad && (this.game.gamePad.A || this.game.gamePad.B)) {
+            return true;
+        }
+        return this.cursors.up.isDown || this.cursors.space.isDown || this.cursors.x.isDown;
+    }
+
+    /** 
+     * @getter
+     * @type {Boolean}
+     */
+    get leftPressed() {
+        if (this.game.gamePad && (this.game.gamePad.left || (this.game.gamePad.leftStick.x < 0))) {
+            return true;
+        }
+        return this.cursors.left.isDown;
+    }
+
+    /** 
+     * @getter
+     * @type {Boolean}
+     */
+    get rightPressed() {
+        if (this.game.gamePad && (this.game.gamePad.right || (this.game.gamePad.leftStick.x > 0))) {
+            return true;
+        }
+        return this.cursors.right.isDown;
     }
 
     /**
@@ -511,9 +513,7 @@ export class Player {
         self.checkpointX = Math.floor(playerSprite.x);
     }
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     get cameraPositionX() {
         if (this.currentCameraDifferenceX > 0) {
             this.currentCameraDifferenceX--;
