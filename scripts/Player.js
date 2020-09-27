@@ -199,9 +199,7 @@ export class Player {
      * Configure the sprites of the player
      */
     configureSprites() {
-        if (!this.sprite) {
-            this.playerSprite = this.game.physics.add.sprite(100, 0, 'idle0');
-        }
+        this.playerSprite = this.game.physics.add.sprite(100, 0, 'idle0');
 
         this.sprite.displayWidth = 60;
         this.sprite.displayHeight = 110;

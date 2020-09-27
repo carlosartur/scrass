@@ -12,14 +12,13 @@ import {
 } from "../Enemies/Ninja.js";
 
 export class Scene1 extends MasterScene {
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     size = 10500;
 
-    /**
-     * @type {Ninja}
-     */
+    /** @type {Boolean} */
+    ended = false;
+
+    /** @type {Ninja} */
     masterNinja = null;
 
     /**
@@ -107,6 +106,11 @@ export class Scene1 extends MasterScene {
      * @method
      */
     callNextStage() {
+        if (this.ended) {
+            return;
+        }
+        this.player.checkpointX = 0;
+        this.ended = true;
         this.scene.start("Scene2");
     }
 }

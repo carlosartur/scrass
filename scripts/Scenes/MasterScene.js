@@ -59,6 +59,9 @@ export class MasterScene extends Phaser.Scene {
     /** @type {Object} */
     endOfStage = null;
 
+    /** @type {Boolean} */
+    created = false;
+
     /**
      * @param {EnviromentSprites} enviromentSprites 
      * @param {Player} player
@@ -73,11 +76,10 @@ export class MasterScene extends Phaser.Scene {
      * @method
      */
     preload() {
+        let className = this.constructor.name.toLowerCase();
         this.enviromentSprites.setGame(this)
             .setEnviroment(this.enviroment);
-
         this.player.setGame(this);
-        let className = this.constructor.name.toLowerCase();
         this.load.json(className, `assets/json/${className}.json`);
     }
 
@@ -93,6 +95,10 @@ export class MasterScene extends Phaser.Scene {
      * @method
      */
     createScene() {
+        if (this.created) {
+            return;
+        }
+        this.created = true;
         let background = this.add.image(400, 350, 'sky');
         background.setScrollFactor(0.01);
 
