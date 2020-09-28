@@ -203,25 +203,57 @@ export class Ninja extends Enemy {
             return;
         }
 
-        let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left;
-        let touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
+        // if (Phase.Math.Distance.Between(this.game.player.sprite.x, this.game.player.sprite.y, this.sprite.x, this.sprite.y)) {
+
+        // }
+        
+        let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left,
+            touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
 
         if (this.isMovimentOver || touchingLeft || touchingRight || isFirstGroundTouch) {
-            let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT, DIRECTIONS.UP],
-                choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
-
-            if (touchingLeft) {
-                choosedDirection = DIRECTIONS.RIGHT;
-            }
-
-            if (touchingRight) {
-                choosedDirection = DIRECTIONS.LEFT;
-            }
+            let choosedDirection = this.chooseDirection(touchingLeft, touchingRight);
             this.configureMovimentDirection(choosedDirection);
         }
 
         this.sprite.setVelocityX(this.currentHorizontalVelocity);
         this.currentMovimentSize--;
+    }
+
+    /**
+     * 
+     * @param {Boolean} touchingLeft 
+     * @param {Boolean} touchingRight 
+     */
+    chooseDirection(touchingLeft, touchingRight) {
+        if (Phaser.Math.Distance.Between(this.game.player.sprite.x, this.game.player.sprite.y, this.sprite.x, this.sprite.y) < 1000) {
+            if (this.sprite.x > this.game.player.sprite.x) {
+                if (touchingLeft) {
+                    return DIRECTIONS.UP;
+                }
+                return DIRECTIONS.LEFT;
+            }
+            
+            if (this.sprite.x < this.game.player.sprite.x) {
+                if (touchingRight) {
+                    return DIRECTIONS.UP;
+                }
+                return DIRECTIONS.RIGHT;
+            }
+        }
+
+        let possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.RIGHT, DIRECTIONS.UP],
+            choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
+
+        if (touchingLeft) {
+            possibleDirections = [DIRECTIONS.RIGHT, DIRECTIONS.UP],
+            choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
+        }
+
+        if (touchingRight) {
+            possibleDirections = [DIRECTIONS.LEFT, DIRECTIONS.UP],
+            choosedDirection = possibleDirections[intRandom() % possibleDirections.length];
+        }
+        return choosedDirection;
     }
 
     /**
@@ -235,7 +267,11 @@ export class Ninja extends Enemy {
         if (choosedDirection === DIRECTIONS.RIGHT) {
             this.runRight();
         }
-        this.playAnimation(this.exclusiveStates.RUN)
+        this.playAnimation(this.exclusiveStates.RUN);
+        
+        if (choosedDirection === DIRECTIONS.UP) {
+            this.jump();
+        }
     }
 
     /**
@@ -254,6 +290,14 @@ export class Ninja extends Enemy {
         this.currentHorizontalVelocity = this.horizontalVelocity;
         this.sprite.setFlipX(false);
         this.sprite.setOffset(100, 50);
+    }
+
+    /**
+     * @method
+     */
+    jump() {
+        this.sprite.setVelocityY(-400);
+        this.playAnimation(this.exclusiveStates.JUMP);
     }
 
     /**
@@ -278,6 +322,7 @@ export class Ninja extends Enemy {
      * @method
      */
     hurt() {
+        this.game.player.score += 100;
         this.life -= 10;
     }
 }

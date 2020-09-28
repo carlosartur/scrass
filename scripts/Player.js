@@ -394,7 +394,7 @@ export class Player {
     }
 
     /**
-     * 
+     * @method
      */
     hurt(forceHurt = false) {
         if (!forceHurt && (self.invincibility || self.idDead)) {
@@ -406,7 +406,7 @@ export class Player {
     }
 
     /**
-     * 
+     * @method
      */
     decreaseInvencibility() {
         if (this.invincibility > 0) {
@@ -420,7 +420,7 @@ export class Player {
     }
 
     /**
-     * Updates the life/score display
+     * @method updateDisplay Updates the life/score display
      */
     updateDisplay(text) {
         let spriteTextDistance = 386,
@@ -445,7 +445,7 @@ export class Player {
     }
 
     /**
-     * 
+     * @method
      */
     configureLifeBar() {
         //draw the bar
@@ -457,7 +457,7 @@ export class Player {
     }
 
     /**
-     * 
+     * @method
      */
     updateLifeBar() {
         let spriteTextDistance = 100,
@@ -511,6 +511,7 @@ export class Player {
     checkpoint(playerSprite, checkpointSprite) {
         checkpointSprite.disableBody(true, true);
         self.checkpointX = Math.floor(playerSprite.x);
+        self.score += 200;
     }
 
     /** @type {Number} */
@@ -524,14 +525,17 @@ export class Player {
         return Math.floor(this.sprite.x) + this.currentCameraDifferenceX;
     }
 
+    /** @type {Boolean} */
     get isDead() {
         return this.life <= 0;
     }
 
+    /** @type {Sprite} */
     get sprite() {
         return this.playerSprite;
     }
 
+    /** @type {Number} */
     get lifeBarColour() {
         return this.lifeColours.filter(item => this.life > item.min && this.life <= item.max)
             .pop()
