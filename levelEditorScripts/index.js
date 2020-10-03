@@ -39,7 +39,25 @@ var currentSelectedElement = null,
         }
     },
     currentPositionedElement = null,
-    tilesPositions = {};
+    tilesPositions = {},
+    possibleNextGroundEnviroment = {
+        default: {
+            "ground": ["ground_right", "ground", "ground_ramp_up_right"],
+            "ground_left": ["ground_right", "ground", "ground_ramp_up_right"],
+            "ground_right": ["water_top", "ground_small_left"],
+            "ground_mid_left": ["ground_mid", "ground_mid_right"],
+            "ground_mid": ["ground_mid", "ground_mid_right", "ground_ramp_up_left_bottom"],
+            "ground_mid_right": ["water_top", "ground_small_left"],
+            "ground_ramp_up_right": ["ground_ramp_up_right_bottom"],
+            "ground_ramp_up_right_bottom": ["ground_ramp_up_left_bottom", "ground_mid"],
+            "ground_ramp_up_left_bottom": ["ground_ramp_up_left"],
+            "ground_ramp_up_left": ["ground_right", "ground"],
+            "ground_small_left": ["ground_small", "ground_small_right"],
+            "ground_small": ["ground_small", "ground_small_right"],
+            "ground_small_right": ["ground_left"],
+            "water_top": ["water_top", "ground_left", "ground_small_left"],
+        }
+    };
 
 $(document).ready(function () {
     const enviroment = new EnviromentSprites(null, enviroments.DEFAULT);
@@ -137,7 +155,8 @@ const keyBindigs = event => {
                     h: Show this modal again
                     x: Deletes the last clicked tile
                     l: Load or reload stage json
-                    m: Generate generic floor
+                    y: Generate stage from seed
+                    n: Generate generic floor
                     g: Generate final JSON file to include on the game
                     c: Clean the cursor, to stop to insert elements every click
                     k: Moves the last clicked tile UP
@@ -229,6 +248,7 @@ const keyBindigs = event => {
                 }));
             },
             'l': function () {
+                $("#level").html("");
                 try {
                     let json = $("#finaljson").val(),
                         object = JSON.parse(json);
@@ -269,7 +289,7 @@ const keyBindigs = event => {
                     console.error(error);
                 }
             },
-            'm': function () {
+            'n': function () {
                 let defaultPosition = {
                         y: 538,
                         x: 62
@@ -286,8 +306,71 @@ const keyBindigs = event => {
                 } while (defaultPosition.x < $("#level").width());
                 $('#finaljson').val(JSON.stringify(object, null, 4));
                 this.l();
+            },
+            'y': function () {
+                let string = $("#currentseed").val() || String(Math.random()).split('.').pop(),
+                    defaultPosition = {
+                        y: 538,
+                        x: 62
+                    },
+                    object = {
+                        platforms: {
+                            ground: []
+                        }
+                    },
+                    count = 0,
+                    arr = createIntArrayFromString(string, string.length),
+                    currentPosition = "ground",
+                    currentArray = [],
+                    $masterTile = $(`.${currentPosition}`).not('.positioned').first(),
+                    possibleNextGround = possibleNextGroundEnviroment[$("#enviroment").val()];
+
+                do {
+                    currentArray = possibleNextGround[currentPosition];
+                    object.platforms[currentPosition] = object.platforms[currentPosition] || [];
+                    object.platforms[currentPosition].push(Object.assign({}, defaultPosition));
+                    defaultPosition.x += $masterTile.width();
+                    let index = getNElement(arr, count);
+                    currentPosition = getNElement(currentArray, index);
+                    console.log(currentPosition);
+                    count++;
+                    $masterTile = $(`.${currentPosition}`).not('.positioned').first();
+                } while (defaultPosition.x < $("#level").width());
+
+                $('#finaljson').val(JSON.stringify(object, null, 4));
+                $("#currentseed").val(string);
+                this.l();
             }
         },
-        callback = actions[key] || actions['h'];
+        callback = (actions[key] || actions['h']).bind(actions);
     callback();
 };
+
+const createIntArrayFromString = (string, length = 100) => {
+    let arr = [],
+        i = 0;
+    do {
+        i++;
+        try {
+            let char = string[i % string.length].toLowerCase(),
+                number = parseInt(char, 36);
+            if (isNaN(number)) {
+                throw `${char} is not a valid number`;
+            }
+            arr.push(number);
+        } catch (err) {
+            console.log(err);
+        }
+    } while (arr.length < length);
+    return arr;
+}
+
+
+const getNElement = (arr, index) => {
+    if (!arr.length) {
+        return undefined;
+    }
+    let seed = index + Math.floor(index / arr.length);
+    index = (seed % arr.length);
+    return arr[index];
+}

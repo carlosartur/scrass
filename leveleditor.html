@@ -12,7 +12,18 @@
     </select>
     <p>Level View</p>
     <div id="level"></div>
-    <textarea id="finaljson" rows="40" cols="100"></textarea>
+    <div>
+        <p>
+            <label for="finaljson">Level JSON</label>
+            <br>
+            <textarea id="finaljson" rows="40" cols="100"></textarea>
+        </p>
+        <p>
+            <label for="currentseed">Level Seed. Leave blank for random seed.</label>
+            <br>
+            <textarea id="currentseed" rows="4" cols="100"></textarea>
+        </p>
+    </div>
     <div id="tiles"></div>
     <script type="module" src="/levelEditorScripts/index.js"></script>
 </body>
