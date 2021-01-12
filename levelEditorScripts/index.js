@@ -50,12 +50,30 @@ var currentSelectedElement = null,
             "ground_mid_right": ["water_top", "ground_small_left"],
             "ground_ramp_up_right": ["ground_ramp_up_right_bottom"],
             "ground_ramp_up_right_bottom": ["ground_ramp_up_left_bottom", "ground_mid"],
-            "ground_ramp_up_left_bottom": ["ground_ramp_up_left"],
+            "ground_ramp_up_left_bottom": ["ground_right"],
             "ground_ramp_up_left": ["ground_right", "ground"],
             "ground_small_left": ["ground_small", "ground_small_right"],
             "ground_small": ["ground_small", "ground_small_right"],
             "ground_small_right": ["ground_left"],
             "water_top": ["water_top", "ground_left", "ground_small_left"],
+        }
+    },
+    possibleUpGroundEnviroment = {
+        default: {
+            "ground": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone", "decorative_tree_1", "decorative_tree_2", "decorative_tree_3", "decorative_crate"],
+            "ground_left": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone",],
+            "ground_right": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone",],
+            "ground_mid_left": ["ground_left"],
+            "ground_mid": ["ground"],
+            "ground_mid_right": ["ground_right"],
+            "ground_ramp_up_right": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone", "decorative_tree_1", "decorative_tree_2", "decorative_tree_3"],
+            "ground_ramp_up_right_bottom": ["ground_left"],
+            "ground_ramp_up_left_bottom": ["ground_right"],
+            "ground_ramp_up_left": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone", "decorative_tree_1", "decorative_tree_2", "decorative_tree_3"],
+            "ground_small_left": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone",],
+            "ground_small": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone", "decorative_tree_1", "decorative_tree_2", "decorative_tree_3"],
+            "ground_small_right": ["decorative_bush_1", "decorative_bush_2", "decorative_bush_3", "decorative_bush_4", "decorative_mushroom_1", "decorative_mushroom_2", "decorative_stone",],
+            "water_top": [],
         }
     };
 
@@ -72,6 +90,10 @@ $(document).ready(function () {
         currentSelectedElement = null;
         tilesPositions = {};
         makeTilesOptions(images, $(this).val());
+    });
+
+    $("#showhelp").click(function () { 
+        modal("help");
     });
 
     $(document).on("click", "img.tile", function () {
@@ -144,205 +166,220 @@ const makeTilesOptions = (images, selectedEnviroment) => {
     }
 };
 
+const functions = {
+    help: function () {
+        modal('help');
+    },
+    fixTilePosition: function () {
+        currentSelectedElement = currentSelectedElement.clone();
+        currentSelectedElement.removeAttr('id');
+    },
+    deleteSelectedTile: function () {
+        currentPositionedElement.remove();
+        currentSelectedElement = null;
+    },
+    generateJson: function () {
+        let finalObj = {};
+        $(".positioned").each(function () {
+            let tileName = $(this).data('tile-name'),
+                tileType = $(this).data('tile-type'),
+                position = tilesPositions[$(this).attr('id')];
+            finalObj[tileType] = finalObj[tileType] || {};
+            finalObj[tileType][tileName] = finalObj[tileType][tileName] || [];
+            finalObj[tileType][tileName].push(position);
+        });
+        $("#finaljson").val(JSON.stringify(finalObj, null, 4));
+    },
+    clearCursor: function () {
+        currentSelectedElement = null;
+    },
+    moveTileUp: function () {
+        let position = tilesPositions[currentSelectedElement.attr('id')];
+        position.y--;
+        currentPositionedElement.css({
+            'position': 'absolute',
+            'top': (position.y - (currentPositionedElement.height() / 2)),
+            'left': (position.x - (currentPositionedElement.width() / 2))
+        });
+
+        currentPositionedElement.attr('data-pos', JSON.stringify({
+            y: position.y,
+            x: position.x
+        }));
+    },
+    moveTileDown: function () {
+        let position = tilesPositions[currentSelectedElement.attr('id')];
+        position.y++;
+        currentPositionedElement.css({
+            'position': 'absolute',
+            'top': (position.y - (currentPositionedElement.height() / 2)),
+            'left': (position.x - (currentPositionedElement.width() / 2))
+        });
+
+        currentPositionedElement.attr('data-pos', JSON.stringify({
+            y: position.y,
+            x: position.x
+        }));
+    },
+    moveTileLeft: function () {
+        let position = tilesPositions[currentSelectedElement.attr('id')];
+        position.x--;
+        currentPositionedElement.css({
+            'position': 'absolute',
+            'top': (position.y - (currentPositionedElement.height() / 2)),
+            'left': (position.x - (currentPositionedElement.width() / 2))
+        });
+
+        currentPositionedElement.attr('data-pos', JSON.stringify({
+            y: position.y,
+            x: position.x
+        }));
+    },
+    moveTileRight: function () {
+        let position = tilesPositions[currentSelectedElement.attr('id')];
+        position.x++;
+        currentPositionedElement.css({
+            'position': 'absolute',
+            'top': (position.y - (currentPositionedElement.height() / 2)),
+            'left': (position.x - (currentPositionedElement.width() / 2))
+        });
+
+        currentPositionedElement.attr('data-pos', JSON.stringify({
+            y: position.y,
+            x: position.x
+        }));
+    },
+    loadJson: function () {
+        $("#level").html("");
+        try {
+            let json = $("#finaljson").val(),
+                object = JSON.parse(json);
+            Object.entries(object).forEach(([typeName, type]) => {
+                if (['crystal', 'enemies'].includes(typeName)) {
+                    return true;
+                }
+                Object.entries(type).forEach(([tile, positions]) => {
+                    const $masterTile = $(`.${tile}`).not('.positioned').first();
+                    positions.forEach(position => {
+                        let relX = position.x,
+                            relY = position.y,
+                            $insertTile = $masterTile.clone();
+                        $insertTile.css({
+                            'position': 'absolute',
+                            'top': relY - $masterTile.height() / 2,
+                            'left': relX - $masterTile.width() / 2
+                        });
+
+                        $insertTile.attr('data-pos', JSON.stringify(position));
+                        let id = $insertTile.attr('id');
+                        if (!id) {
+                            id = (new Date()).getTime();
+                            $insertTile.attr('id', id);
+                        }
+                        $insertTile.addClass("positioned");
+                        $("#level").append($insertTile);
+
+                        positions.y += $(`#${id}`).height() / 2;
+                        positions.x += $(`#${id}`).width() / 2;
+
+                        tilesPositions[$insertTile.attr('id')] = position;
+                    });
+                });
+            });
+        } catch (error) {
+            alert('error trying to load json data');
+            console.error(error);
+        }
+    },
+    generateFlatFloor: function () {
+        let defaultPosition = {
+            y: 538,
+            x: 62
+        },
+            object = {
+                platforms: {
+                    ground: []
+                }
+            },
+            $masterTile = $('.ground').not('.positioned').first();
+        do {
+            object.platforms.ground.push(Object.assign({}, defaultPosition));
+            defaultPosition.x += $masterTile.width();
+        } while (defaultPosition.x < $("#level").width());
+        $('#finaljson').val(JSON.stringify(object, null, 4));
+        this.l();
+    },
+    generateFromSeed: function () {
+        let string = $("#currentseed").val() || String(Math.random()).split('.').pop(),
+            defaultPosition = {
+                y: 538,
+                x: 62
+            },
+            object = {
+                platforms: {
+                    ground: []
+                }
+            },
+            count = 0,
+            arr = createIntArrayFromString(string, string.length),
+            currentPosition = "ground",
+            currentArray = [],
+            $masterTile = $(`.${currentPosition}`).not('.positioned').first(),
+            possibleNextGround = possibleNextGroundEnviroment[$("#enviroment").val()],
+            possibleUpGround = possibleUpGroundEnviroment[$("#enviroment").val()];
+
+        do {
+            currentArray = possibleNextGround[currentPosition];
+            object.platforms[currentPosition] = object.platforms[currentPosition] || [];
+            object.platforms[currentPosition].push(Object.assign({}, defaultPosition));
+            defaultPosition.x += $masterTile.width();
+            let index = getNElement(arr, count);
+            currentPosition = getNElement(currentArray, index);
+            count++;
+            $masterTile = $(`.${currentPosition}`).not('.positioned').first();
+            
+            let aboveGround = getNElement(possibleUpGround[currentPosition], index);
+            if (aboveGround) {
+                let $aboveGroundElement = $(`.${aboveGround}`).not('.positioned').first(),
+                    aboveGroundElementType = $aboveGroundElement.data('tile-type'),
+                    aboveGroundElementHeigth = $aboveGroundElement.height();
+                
+                let aboveGroundTilePositionX = defaultPosition.x,
+                    aboveGroundTilePositionY = defaultPosition.y - aboveGroundElementHeigth * (aboveGroundElementType === "decoratives" ? 1.5 : 1);
+                
+                object[aboveGroundElementType] = object[aboveGroundElementType] || {};
+                object[aboveGroundElementType][aboveGround] = object[aboveGroundElementType][aboveGround] || [];
+                object[aboveGroundElementType][aboveGround].push({ x: aboveGroundTilePositionX, y: aboveGroundTilePositionY });
+            }
+            
+        } while (defaultPosition.x < $("#level").width());
+
+        $('#finaljson').val(JSON.stringify(object, null, 4));
+        $("#currentseed").val(string);
+        functions.loadJson();
+    }
+};
+
 const keyBindigs = event => {
     let key = event.key,
         actions = {
-            'h': function () {
-                alert(`Help
-                    To use this editor, select a enviroment, click on a tile and click on the position it must be on game.
-                    Key bindings(ALT+):
-                    r: Fix the position of the last inserted tile
-                    h: Show this modal again
-                    x: Deletes the last clicked tile
-                    l: Load or reload stage json
-                    y: Generate stage from seed
-                    n: Generate generic floor
-                    g: Generate final JSON file to include on the game
-                    c: Clean the cursor, to stop to insert elements every click
-                    k: Moves the last clicked tile UP
-                    ,: Moves the last clicked tile DOWN
-                    m: Moves the last clicked tile LEFT
-                    .: Moves the last clicked tile RIGHT
-                    `.split(' '.repeat(20)).join(' '.repeat(4)));
-            },
-            'r': function () {
-                currentSelectedElement = currentSelectedElement.clone();
-                currentSelectedElement.removeAttr('id');
-            },
-            'x': function () {
-                currentPositionedElement.remove();
-                currentSelectedElement = null;
-            },
-            'g': function () {
-                let finalObj = {};
-                $(".positioned").each(function () {
-                    let tileName = $(this).data('tile-name'),
-                        tileType = $(this).data('tile-type'),
-                        position = tilesPositions[$(this).attr('id')];
-                    finalObj[tileType] = finalObj[tileType] || {};
-                    finalObj[tileType][tileName] = finalObj[tileType][tileName] || [];
-                    finalObj[tileType][tileName].push(position);
-                });
-                $("#finaljson").val(JSON.stringify(finalObj, null, 4));
-            },
+            'h': functions.help,
+            'r': functions.fixTilePosition,
+            'x': functions.deleteSelectedTile,
+            'g': functions.generateJson,
             'Alt': function () {
                 return true;
             },
-            'c': function () {
-                currentSelectedElement = null;
-            },
-            'k': function () {
-                let position = tilesPositions[currentSelectedElement.attr('id')];
-                position.y--;
-                currentPositionedElement.css({
-                    'position': 'absolute',
-                    'top': (position.y - (currentPositionedElement.height() / 2)),
-                    'left': (position.x - (currentPositionedElement.width() / 2))
-                });
-
-                currentPositionedElement.attr('data-pos', JSON.stringify({
-                    y: position.y,
-                    x: position.x
-                }));
-            },
-            ',': function () {
-                let position = tilesPositions[currentSelectedElement.attr('id')];
-                position.y++;
-                currentPositionedElement.css({
-                    'position': 'absolute',
-                    'top': (position.y - (currentPositionedElement.height() / 2)),
-                    'left': (position.x - (currentPositionedElement.width() / 2))
-                });
-
-                currentPositionedElement.attr('data-pos', JSON.stringify({
-                    y: position.y,
-                    x: position.x
-                }));
-            },
-            'm': function () {
-                let position = tilesPositions[currentSelectedElement.attr('id')];
-                position.x--;
-                currentPositionedElement.css({
-                    'position': 'absolute',
-                    'top': (position.y - (currentPositionedElement.height() / 2)),
-                    'left': (position.x - (currentPositionedElement.width() / 2))
-                });
-
-                currentPositionedElement.attr('data-pos', JSON.stringify({
-                    y: position.y,
-                    x: position.x
-                }));
-            },
-            '.': function () {
-                let position = tilesPositions[currentSelectedElement.attr('id')];
-                position.x++;
-                currentPositionedElement.css({
-                    'position': 'absolute',
-                    'top': (position.y - (currentPositionedElement.height() / 2)),
-                    'left': (position.x - (currentPositionedElement.width() / 2))
-                });
-
-                currentPositionedElement.attr('data-pos', JSON.stringify({
-                    y: position.y,
-                    x: position.x
-                }));
-            },
-            'l': function () {
-                $("#level").html("");
-                try {
-                    let json = $("#finaljson").val(),
-                        object = JSON.parse(json);
-                    Object.entries(object).forEach(([typeName, type]) => {
-                        if (['crystal', 'enemies'].includes(typeName)) {
-                            return true;
-                        }
-                        Object.entries(type).forEach(([tile, positions]) => {
-                            const $masterTile = $(`.${tile}`).not('.positioned').first();
-                            positions.forEach(position => {
-                                let relX = position.x,
-                                    relY = position.y,
-                                    $insertTile = $masterTile.clone();
-                                $insertTile.css({
-                                    'position': 'absolute',
-                                    'top': relY - $masterTile.height() / 2,
-                                    'left': relX - $masterTile.width() / 2
-                                });
-
-                                $insertTile.attr('data-pos', JSON.stringify(position));
-                                let id = $insertTile.attr('id');
-                                if (!id) {
-                                    id = (new Date()).getTime();
-                                    $insertTile.attr('id', id);
-                                }
-                                $insertTile.addClass("positioned");
-                                $("#level").append($insertTile);
-
-                                positions.y += $(`#${id}`).height() / 2;
-                                positions.x += $(`#${id}`).width() / 2;
-
-                                tilesPositions[$insertTile.attr('id')] = position;
-                            });
-                        });
-                    });
-                } catch (error) {
-                    alert('error trying to load json data');
-                    console.error(error);
-                }
-            },
-            'n': function () {
-                let defaultPosition = {
-                        y: 538,
-                        x: 62
-                    },
-                    object = {
-                        platforms: {
-                            ground: []
-                        }
-                    },
-                    $masterTile = $('.ground').not('.positioned').first();
-                do {
-                    object.platforms.ground.push(Object.assign({}, defaultPosition));
-                    defaultPosition.x += $masterTile.width();
-                } while (defaultPosition.x < $("#level").width());
-                $('#finaljson').val(JSON.stringify(object, null, 4));
-                this.l();
-            },
-            'y': function () {
-                let string = $("#currentseed").val() || String(Math.random()).split('.').pop(),
-                    defaultPosition = {
-                        y: 538,
-                        x: 62
-                    },
-                    object = {
-                        platforms: {
-                            ground: []
-                        }
-                    },
-                    count = 0,
-                    arr = createIntArrayFromString(string, string.length),
-                    currentPosition = "ground",
-                    currentArray = [],
-                    $masterTile = $(`.${currentPosition}`).not('.positioned').first(),
-                    possibleNextGround = possibleNextGroundEnviroment[$("#enviroment").val()];
-
-                do {
-                    currentArray = possibleNextGround[currentPosition];
-                    object.platforms[currentPosition] = object.platforms[currentPosition] || [];
-                    object.platforms[currentPosition].push(Object.assign({}, defaultPosition));
-                    defaultPosition.x += $masterTile.width();
-                    let index = getNElement(arr, count);
-                    currentPosition = getNElement(currentArray, index);
-                    console.log(currentPosition);
-                    count++;
-                    $masterTile = $(`.${currentPosition}`).not('.positioned').first();
-                } while (defaultPosition.x < $("#level").width());
-
-                $('#finaljson').val(JSON.stringify(object, null, 4));
-                $("#currentseed").val(string);
-                this.l();
-            }
+            'c': functions.clearCursor,
+            'k': functions.moveTileUp,
+            ',': functions.moveTileDown,
+            'm': functions.moveTileLeft,
+            '.': functions.moveTileRight,
+            'l': functions.loadJson,
+            'n': functions.generateFlatFloor,
+            'y': functions.generateFromSeed
         },
-        callback = (actions[key] || actions['h']).bind(actions);
+        callback = (actions[key] || actions['h']).bind(functions);
     callback();
 };
 

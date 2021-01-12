@@ -72,3 +72,9 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.keybinding {
+    font-weight: bold;
+    width: 62px;
+    display: inline-block;
+}
