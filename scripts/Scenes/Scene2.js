@@ -12,14 +12,10 @@ import {
 } from "../Enemies/Ninja.js";
 
 export class Scene2 extends MasterScene {
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     size = 10500;
 
-    /**
-     * @type {Ninja}
-     */
+    /** @type {Boolean} */
     masterNinja = null;
 
     /**

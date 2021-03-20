@@ -9,99 +9,61 @@ import {
 } from "../Scenes/Scene1.js";
 
 export class Enemy extends Clonable {
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     life = 10;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     width = 100;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     heigth = 400;
 
-    /**
-     * @type {String}
-     */
+    /** @type {String} */
     enemiesImagesPath = "assets/images/sprites";
 
-    /**
-     * @type {String}
-     */
+    /** @type {String} */
     imagesPath = "";
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     enemyStates = states;
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     exclusiveStates = {};
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     enemySprite = null
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     tiles = {};
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     imagesLoaded = false;
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     animsCreated = false;
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     deadAnimationPlayed = false;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     movimentSize = 500;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     currentMovimentSize = 500;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     horizontalVelocity = 80;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     currentHorizontalVelocity = 80;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     initialX = 0;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     initialY = 0;
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     alreadyTouchGround = false;
 
     /**
@@ -167,14 +129,16 @@ export class Enemy extends Clonable {
         return this.life <= 0;
     }
 
-    /**
-     * @type {Boolean}
-     */
+    /** @type {Boolean} */
     get isMovimentOver() {
         if (this.currentMovimentSize <= 0) {
             this.currentMovimentSize = this.movimentSize;
             return true;
         }
         return false;
+    }
+
+    static get INIT_DEAD_DESTROY_COUNTDOWN() {
+        return 500;
     }
 }

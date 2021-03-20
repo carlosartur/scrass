@@ -15,19 +15,13 @@ import {
 
 export class Ninja extends Enemy {
 
-    /**
-     * @type {String[]}
-     */
+    /** @type {String[]} */
     statusNotUsed = [states.WALK];
 
-    /**
-     * @type {String}
-     */
+    /** @type {String} */
     imagesPath = "/ninjaadventurenew/png";
 
-    /**
-     * @type {Object}
-     */
+    /** @type {Object} */
     exclusiveStates = {
         ATTACK: 'Attack',
         CLIMB: 'Climb',
@@ -37,35 +31,29 @@ export class Ninja extends Enemy {
         THROW: 'Throw',
     }
 
-    /**
-     * @type {MasterScene}
-     */
+    /** @type {MasterScene} */
     game = null;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     horizontalVelocity = 120;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     currentHorizontalVelocity = 120;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     width = 250;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     initialX = 300;
 
-    /**
-     * @type {Number}
-     */
+    /** @type {Number} */
     id = 0;
+    
+    /** @type {String} */
+    currentAnimation = null;
+
+    /** @type {Number} */
+    deadDestroyCountdown = Enemy.INIT_DEAD_DESTROY_COUNTDOWN;
 
     /**
      * @param {Object} config 
@@ -171,15 +159,26 @@ export class Ninja extends Enemy {
      * @param {String} animationState 
      */
     playAnimation(animationState = states.IDLE) {
+        if (this.currentAnimation === animationState) {
+            return;
+        }
         let key = this.getAnimationKey(animationState);
         let anims = this.sprite.anims;
         anims.play(key);
+        this.currentAnimation = animationState;
     }
 
     /**
      * @method
      */
     move() {
+        if (
+            !this.sprite.body.enable
+            && this.deadDestroyCountdown <= 0
+        ) {
+            return;
+        }
+        
         let isFirstGroundTouch = false;
         if ((!this.alreadyTouchGround) && this.sprite.body.touching.down) {
             isFirstGroundTouch = true;
@@ -197,8 +196,14 @@ export class Ninja extends Enemy {
                 this.deadAnimationPlayed = true;
             }
             this.sprite.setVelocityX(0);
-            this.sprite.body.enable = false;
             this.sprite.z = false;
+
+            if (this.sprite.body.touching.down) {
+                this.sprite.body.enable = false;
+            }
+            
+            this.deadDestroyCountdown--;
+            this.sprite.setAlpha(this.deadDestroyCountdown / Enemy.INIT_DEAD_DESTROY_COUNTDOWN);
 
             return;
         }
@@ -207,6 +212,10 @@ export class Ninja extends Enemy {
 
         // }
         
+        if (this.sprite.body.touching.down) {
+            this.playAnimation(this.exclusiveStates.RUN);
+        }
+
         let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left,
             touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
 
@@ -309,7 +318,8 @@ export class Ninja extends Enemy {
         }
 
         let player = this.game.player,
-            jumpOnHead = this.sprite.body.touching.up && player.sprite.body.touching.down;
+            jumpOnHead = this.sprite.body.top + 50 >= player.sprite.body.bottom;
+        
         if (jumpOnHead) {
             player.jump();
             this.hurt();

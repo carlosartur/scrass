@@ -105,8 +105,9 @@ export class MasterScene extends Phaser.Scene {
             return;
         }
         this.created = true;
-        let background = this.add.image(400, 350, 'sky');
-        background.setScrollFactor(0.01);
+
+        let background = this.add.tileSprite(0, 250, this.size, 600, 'sky');
+        background.setScrollFactor(0.05);
 
         this.createPlatforms();
         this.createDecoratives();
