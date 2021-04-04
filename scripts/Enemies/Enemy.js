@@ -7,6 +7,7 @@ import {
 import {
     Scene1
 } from "../Scenes/Scene1.js";
+import { intRandom } from "../Helpers.js";
 
 export class Enemy extends Clonable {
     /** @type {Number} */
@@ -46,10 +47,13 @@ export class Enemy extends Clonable {
     deadAnimationPlayed = false;
 
     /** @type {Number} */
-    movimentSize = 500;
+    maxMovimentSize = 500;
 
     /** @type {Number} */
     currentMovimentSize = 500;
+
+    /** @type {Number} */
+    minMovimentSize = 200;
 
     /** @type {Number} */
     horizontalVelocity = 80;
@@ -66,6 +70,10 @@ export class Enemy extends Clonable {
     /** @type {Boolean} */
     alreadyTouchGround = false;
 
+
+    /** @type {Boolean} */
+    isAttacking = false;
+
     /**
      * @method
      */
@@ -78,6 +86,7 @@ export class Enemy extends Clonable {
      */
     setGame(value) {
         this.game = value;
+        this.generateTiles();
         for (let state in this.tiles) {
             const imageFrames = this.tiles[state];
             for (let key in imageFrames) {
@@ -85,22 +94,8 @@ export class Enemy extends Clonable {
                 this.game.load.image(key, imagePath);
             }
         }
-        this.generateTiles();
+        
         return this;
-    }
-
-    /**
-     * @abstract
-     */
-    configureSprites() {
-        throw new TypeError('Must implement "configureSprites" on child class.');
-    }
-
-    /**
-     * @returns {String}
-     */
-    get enemySpriteNamePrefix() {
-        return `${this.constructor.name.toLowerCase()}_`;
     }
 
     /**
@@ -114,6 +109,13 @@ export class Enemy extends Clonable {
     /**
      * @abstract
      */
+    configureSprites() {
+        throw new TypeError('Must implement "configureSprites" on child class.');
+    }
+
+    /**
+     * @abstract
+     */
     move() {
         throw new TypeError('Must implement "move" on child class.');
     }
@@ -122,7 +124,23 @@ export class Enemy extends Clonable {
      * @abstract
      */
     touchPlayer() {
-        throw new TypeError('Must implement "move" on child class.');
+        throw new TypeError('Must implement "touchPlayer" on child class.');
+    }
+
+    /**
+     * @returns {String}
+     */
+    get enemySpriteNamePrefix() {
+        return `${this.constructor.name.toLowerCase()}_`;
+    }
+
+    /**
+     * @method
+     * Randomize moviment size
+     */
+    get randomCurrentMovimentSize() {
+        this.currentMovimentSize = intRandom(this.minMovimentSize, this.maxMovimentSize);
+        return this.currentMovimentSize;
     }
 
     get isDead() {
@@ -132,7 +150,7 @@ export class Enemy extends Clonable {
     /** @type {Boolean} */
     get isMovimentOver() {
         if (this.currentMovimentSize <= 0) {
-            this.currentMovimentSize = this.movimentSize;
+            this.currentMovimentSize = this.randomCurrentMovimentSize;
             return true;
         }
         return false;

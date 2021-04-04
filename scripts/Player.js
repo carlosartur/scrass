@@ -197,7 +197,6 @@ export class Player {
         this.cursors = cursors;
         this.updateLifeBar();
         this.decreaseInvencibility();
-
         if (!this.lifes) {
             return;
         }
@@ -240,7 +239,7 @@ export class Player {
      * @type {Boolean}
      */
     get runPressed() {
-        if (this.game.gamePad && (this.game.gamePad.X || this.game.gamePad.Y)) {
+        if (this.game.gamePad && (this.game.gamePad.A || this.game.gamePad.Y)) {
             return true;
         }
         return this.cursors.shift.isDown || this.cursors.z.isDown;
@@ -251,7 +250,7 @@ export class Player {
      * @type {Boolean}
      */
     get jumpPressed() {
-        if (this.game.gamePad && (this.game.gamePad.A || this.game.gamePad.B)) {
+        if (this.game.gamePad && (this.game.gamePad.X || this.game.gamePad.B)) {
             return true;
         }
         return this.cursors.up.isDown || this.cursors.space.isDown || this.cursors.x.isDown;
@@ -300,7 +299,7 @@ export class Player {
      */
     instantDie() {
         self.life = 10;
-        self.hurt(true);
+        self.hurt(true, -1);
     }
 
     /**
@@ -396,13 +395,12 @@ export class Player {
     /**
      * @method
      */
-    hurt(forceHurt = false) {
+    hurt(forceHurt = false, invincibility = 250) {
         if (!forceHurt && (self.invincibility || self.idDead)) {
             return;
         }
         self.life -= 10;
-        self.sprite.setTint(0xff8800);
-        self.invincibility = 250;
+        self.invincibility = invincibility;
     }
 
     /**
@@ -410,13 +408,14 @@ export class Player {
      */
     decreaseInvencibility() {
         if (this.invincibility > 0) {
+            this.sprite.setAlpha((this.invincibility / 5) % 2);
             this.invincibility--;
             return;
         }
         if (this.invincibility < 0) {
             this.invincibility = 0;
         }
-        this.sprite.setTint(0xffffff);
+        this.sprite.setAlpha(1);
     }
 
     /**

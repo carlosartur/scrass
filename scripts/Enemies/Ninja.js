@@ -13,6 +13,9 @@ import {
     MasterScene
 } from "../Scenes/MasterScene.js";
 
+import {
+    Kunai
+} from './Kunai.js';
 export class Ninja extends Enemy {
 
     /** @type {String[]} */
@@ -45,15 +48,15 @@ export class Ninja extends Enemy {
 
     /** @type {Number} */
     initialX = 300;
-
-    /** @type {Number} */
-    id = 0;
     
     /** @type {String} */
     currentAnimation = null;
 
     /** @type {Number} */
     deadDestroyCountdown = Enemy.INIT_DEAD_DESTROY_COUNTDOWN;
+    
+    /** @type {Kunai} */
+    kunai = null;
 
     /**
      * @param {Object} config 
@@ -65,6 +68,7 @@ export class Ninja extends Enemy {
             this.setGame(game);
         }
         this.init();
+
     }
 
     /**
@@ -72,6 +76,7 @@ export class Ninja extends Enemy {
      */
     init() {
         super.init();
+        this.randomCurrentMovimentSize;
         this.generateTiles();
     }
 
@@ -82,26 +87,34 @@ export class Ninja extends Enemy {
         return this.game;
     }
 
+    setGame(game) {
+        super.setGame(game);
+        this.kunai = (new Kunai())
+            .setGame(this.game)
+            .configureSprites();
+        return this;
+    }
+
     /**
      * @method
      */
     generateTiles() {
-        if (!this.imagesLoaded) {
-            let imagesArray = range(0, 9);
-            for (let state in this.exclusiveStates) {
-                const imageFrames = this.exclusiveStates[state];
-                if (this.statusNotUsed.includes(imageFrames)) {
-                    continue;
-                }
-                imagesArray.map(item => {
-                    const imageAnimationKey = this.getAnimationKey(imageFrames);
-                    this.tiles[imageAnimationKey] = this.tiles[imageAnimationKey] || {};
-                    this.tiles[imageAnimationKey][`${imageAnimationKey}${item}`] = `${this.enemiesImagesPath}${this.imagesPath}/${imageFrames}_00${item}.png`;
-                }, this);
-            }
-            this.imagesLoaded = true;
+        if (this.imagesLoaded) {
+            return this;
         }
-        return this;
+        let imagesArray = range(0, 9);
+        for (let state in this.exclusiveStates) {
+            const imageFrames = this.exclusiveStates[state];
+            if (this.statusNotUsed.includes(imageFrames)) {
+                continue;
+            }
+            imagesArray.map(item => {
+                const imageAnimationKey = this.getAnimationKey(imageFrames);
+                this.tiles[imageAnimationKey] = this.tiles[imageAnimationKey] || {};
+                this.tiles[imageAnimationKey][`${imageAnimationKey}${item}`] = `${this.enemiesImagesPath}${this.imagesPath}/${imageFrames}_00${item}.png`;
+            }, this);
+        }
+        this.imagesLoaded = true;
     }
 
     /**
@@ -173,13 +186,21 @@ export class Ninja extends Enemy {
      */
     move() {
         if (
-            !this.sprite.body.enable
+            (!this.sprite.body.enable)
             && this.deadDestroyCountdown <= 0
         ) {
             return;
         }
+
+        if (this.isDead) {
+            this.playDeadAnimation();
+            return;
+        }
         
-        let isFirstGroundTouch = false;
+        let isFirstGroundTouch = false,
+            movimentOver = this.isMovimentOver;
+        this.currentMovimentSize--;
+
         if ((!this.alreadyTouchGround) && this.sprite.body.touching.down) {
             isFirstGroundTouch = true;
             this.alreadyTouchGround = true;
@@ -190,27 +211,13 @@ export class Ninja extends Enemy {
             return;
         }
 
-        if (this.isDead) {
-            if (!this.deadAnimationPlayed) {
-                this.playAnimation(states.DEAD);
-                this.deadAnimationPlayed = true;
-            }
-            this.sprite.setVelocityX(0);
-            this.sprite.z = false;
-
-            if (this.sprite.body.touching.down) {
-                this.sprite.body.enable = false;
-            }
-            
-            this.deadDestroyCountdown--;
-            this.sprite.setAlpha(this.deadDestroyCountdown / Enemy.INIT_DEAD_DESTROY_COUNTDOWN);
-
+        if ((!movimentOver) && this.isAttacking) {
             return;
         }
 
-        // if (Phase.Math.Distance.Between(this.game.player.sprite.x, this.game.player.sprite.y, this.sprite.x, this.sprite.y)) {
-
-        // }
+        if (movimentOver && this.tryToAttack()) {
+            return;
+        }
         
         if (this.sprite.body.touching.down) {
             this.playAnimation(this.exclusiveStates.RUN);
@@ -219,16 +226,74 @@ export class Ninja extends Enemy {
         let touchingLeft = (this.sprite.x < 0) || this.sprite.body.touching.left,
             touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
 
-        if (this.isMovimentOver || touchingLeft || touchingRight || isFirstGroundTouch) {
+        if (movimentOver || touchingLeft || touchingRight || isFirstGroundTouch) {
             let choosedDirection = this.chooseDirection(touchingLeft, touchingRight);
             this.configureMovimentDirection(choosedDirection);
         }
 
         this.sprite.setVelocityX(this.currentHorizontalVelocity);
-        this.currentMovimentSize--;
     }
 
+    /** @method */
+    playDeadAnimation() {
+        if (!this.deadAnimationPlayed) {
+            this.playAnimation(states.DEAD);
+            this.deadAnimationPlayed = true;
+        }
+        this.sprite.setVelocityX(0);
+        this.sprite.z = false;
+
+        if (this.sprite.body.touching.down) {
+            this.sprite.body.enable = false;
+        }
+        
+        this.deadDestroyCountdown--;
+        this.sprite.setAlpha(this.deadDestroyCountdown / Enemy.INIT_DEAD_DESTROY_COUNTDOWN);
+    }
+    
     /**
+     * @returns {Boolean} true if ninja will attack, false if not
+     */
+    tryToAttack() {
+        this.isAttacking = false;
+        
+        if (!this.sprite.body.touching.down) {
+            return false;
+        }
+
+        let distanceToPlayer = Phaser.Math.Distance.Between(this.game.player.sprite.x, this.game.player.sprite.y, this.sprite.x, this.sprite.y),
+            attackRatio = intRandom();
+            
+        if (distanceToPlayer < 300 && !(attackRatio % 2)) {
+            this.attack();
+            return true;
+        }
+
+        let attackFrequency = distanceToPlayer < 1000 ? 5 : 3;
+        if (!(attackRatio % attackFrequency)) {
+            this.throwKunai();
+            return true;
+        }
+        return false;
+    }
+
+    attack() {
+        this.isAttacking = true;
+        this.sprite.setVelocityX(0);
+        this.playAnimation(this.exclusiveStates.ATTACK);
+        this.currentMovimentSize = 30;
+    }
+    
+    throwKunai() {
+        this.sprite.setVelocityX(0);
+        this.playAnimation(this.exclusiveStates.THROW);
+        this.currentMovimentSize = 30;
+        this.game.enemiesSprites.push(this.kunai.clone({ initialX: 100 }));
+    }
+    
+    /**
+     * @method
+     * Choose the direction of running or jumping.
      * 
      * @param {Boolean} touchingLeft 
      * @param {Boolean} touchingRight 
@@ -320,7 +385,7 @@ export class Ninja extends Enemy {
         let player = this.game.player,
             jumpOnHead = this.sprite.body.top + 50 >= player.sprite.body.bottom;
         
-        if (jumpOnHead) {
+        if (jumpOnHead && !this.isAttacking) {
             player.jump();
             this.hurt();
             return;
