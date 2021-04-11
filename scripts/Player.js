@@ -469,11 +469,13 @@ export class Player {
             minTextBorderDistance;
         this.lifeBar.y = 16;
 
-        if (this.life > this.displayLife) {
-            this.displayLife += 2;
-        } else if (this.life < this.displayLife) {
-            this.displayLife -= 2;
+        let lifeUpdate = 0;
+        if (this.life !== this.displayLife) {
+            lifeUpdate = this.life > this.displayLife ? 2 : -2;
         }
+
+        this.displayLife += lifeUpdate;
+        
 
         this.lifeBar.scaleX = this.displayLife / this.initialLife;
     }

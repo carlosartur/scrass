@@ -58,6 +58,9 @@ export class Ninja extends Enemy {
     /** @type {Kunai} */
     kunai = null;
 
+    /** @type {String} */
+    currentDirection = DIRECTIONS.LEFT;
+    
     /**
      * @param {Object} config 
      */
@@ -90,8 +93,7 @@ export class Ninja extends Enemy {
     setGame(game) {
         super.setGame(game);
         this.kunai = (new Kunai())
-            .setGame(this.game)
-            .configureSprites();
+            .setGame(this.game);
         return this;
     }
 
@@ -288,7 +290,10 @@ export class Ninja extends Enemy {
         this.sprite.setVelocityX(0);
         this.playAnimation(this.exclusiveStates.THROW);
         this.currentMovimentSize = 30;
-        this.game.enemiesSprites.push(this.kunai.clone({ initialX: 100 }));
+        /** @type {Kunai} */
+        let newKunai = this.kunai.clone();
+        this.game.enemiesSprites.push(newKunai);
+        newKunai.throwKunai(this);
     }
     
     /**
@@ -355,6 +360,7 @@ export class Ninja extends Enemy {
         this.currentHorizontalVelocity = this.horizontalVelocity * -1;
         this.sprite.setFlipX(true);
         this.sprite.setOffset(50, 50);
+        this.currentDirection = DIRECTIONS.LEFT;
     }
 
     /**
@@ -364,6 +370,7 @@ export class Ninja extends Enemy {
         this.currentHorizontalVelocity = this.horizontalVelocity;
         this.sprite.setFlipX(false);
         this.sprite.setOffset(100, 50);
+        this.currentDirection = DIRECTIONS.RIGHT;
     }
 
     /**
