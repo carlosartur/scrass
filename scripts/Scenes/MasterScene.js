@@ -68,6 +68,9 @@ export class MasterScene extends Phaser.Scene {
     /** @type {Gamepad} */
     gamePad = null;
 
+    /** @type {Enemy[]} */
+    enemiesWithoutCollider = [];
+
     /**
      * @param {EnviromentSprites} enviromentSprites 
      * @param {Player} player
@@ -215,6 +218,16 @@ export class MasterScene extends Phaser.Scene {
             if (startButton && startButton.value) {
                 this.togglePause();
             }
+        }
+
+
+        /** @type {Enemy} */
+        let enemyWithoutCollider = null;
+        while (enemyWithoutCollider = this.enemiesWithoutCollider.pop()) {
+            let sprite = enemyWithoutCollider.enemySprite;
+            
+            this.physics.add.collider(sprite, this.player.sprite, enemyWithoutCollider.touchPlayer.bind(enemyWithoutCollider));
+            this.physics.add.overlap(sprite, this.player.sprite, enemyWithoutCollider.touchPlayer.bind(enemyWithoutCollider));
         }
 
         this.enemiesSprites.forEach(enemy => enemy.move());

@@ -22,7 +22,7 @@ export class Kunai extends Enemy {
     };
 
     /** @type {Number} */
-    horizontalVelocity = 30;
+    horizontalVelocity = 300;
 
     /** @type {Number} */
     width = 15;
@@ -58,8 +58,6 @@ export class Kunai extends Enemy {
             this.configureSprites();
             this.isReady = true;
         }
-        // this.enemySprite.setSize(this.width, this.heigth);
-        // this.enemySprite.setDisplaySize(this.width, this.heigth);
         
         this.enemySprite.setVelocityX(this.currentHorizontalVelocity);
     }
@@ -68,7 +66,9 @@ export class Kunai extends Enemy {
      * @abstract
      */
     touchPlayer() {
-        throw new TypeError('Must implement "touchPlayer" on child class.');
+        let player = this.game.player;
+        player.hurt();
+        this.enemySprite.disableBody(true, true);
     }
 
     /**
@@ -87,7 +87,9 @@ export class Kunai extends Enemy {
         this.enemySprite.setAlpha(1);
         this.currentHorizontalVelocity = this.horizontalVelocity * velocityMultiplier;
         this.enemySprite.angle = 90 * velocityMultiplier;
-        this.enemySprite.setSize(this.heigth * 2, this.width * 2);
 
+        // Height and width is 
+        this.enemySprite.setSize(this.heigth * 2, this.width * 2);
+        this.game.enemiesWithoutCollider.push(this);
     }
 }
