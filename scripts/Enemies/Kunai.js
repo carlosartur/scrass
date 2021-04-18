@@ -79,16 +79,16 @@ export class Kunai extends Enemy {
             this.configureSprites();
             this.isReady = true;
         }
-        let velocityMultiplier = ninja.currentDirection === DIRECTIONS.RIGHT
+        let multiplier = ninja.currentDirection === DIRECTIONS.RIGHT
             ? 1
             : -1;
         this.enemySprite.x = ninja.sprite.x;
-        this.enemySprite.y = ninja.sprite.y;
+        this.enemySprite.y = ninja.sprite.y + 100;
         this.enemySprite.setAlpha(1);
-        this.currentHorizontalVelocity = this.horizontalVelocity * velocityMultiplier;
-        this.enemySprite.angle = 90 * velocityMultiplier;
+        this.currentHorizontalVelocity = this.horizontalVelocity * multiplier * (1 + (Math.random() / 5));
+        this.enemySprite.angle = 90 * multiplier;
 
-        // Height and width is 
+        // Height and width is reversed due to angle of sprite.
         this.enemySprite.setSize(this.heigth * 2, this.width * 2);
         this.game.enemiesWithoutCollider.push(this);
     }
