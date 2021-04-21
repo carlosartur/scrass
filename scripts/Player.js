@@ -194,6 +194,9 @@ export class Player {
      * @param {Object} cursors 
      */
     move(cursors) {
+        if (this.sprite.x < 0) {
+            this.sprite.x = 0;
+        }
         this.cursors = cursors;
         this.updateLifeBar();
         this.decreaseInvencibility();

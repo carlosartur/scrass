@@ -25,10 +25,10 @@ export class Kunai extends Enemy {
     horizontalVelocity = 300;
 
     /** @type {Number} */
-    width = 15;
+    width = 12;
 
     /** @type {Number} */
-    heigth = 75;
+    heigth = 60;
 
     init() {
         return this;
@@ -82,8 +82,8 @@ export class Kunai extends Enemy {
         let multiplier = ninja.currentDirection === DIRECTIONS.RIGHT
             ? 1
             : -1;
-        this.enemySprite.x = ninja.sprite.x;
-        this.enemySprite.y = ninja.sprite.y + 100;
+        this.enemySprite.x = ninja.sprite.x + (50 * multiplier);
+        this.enemySprite.y = ninja.sprite.y + 75;
         this.enemySprite.setAlpha(1);
         this.currentHorizontalVelocity = this.horizontalVelocity * multiplier * (1 + (Math.random() / 5));
         this.enemySprite.angle = 90 * multiplier;

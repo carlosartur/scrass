@@ -258,7 +258,7 @@ export class Ninja extends Enemy {
      */
     tryToAttack() {
         this.isAttacking = false;
-        
+
         if (!this.sprite.body.touching.down) {
             return false;
         }
@@ -271,7 +271,7 @@ export class Ninja extends Enemy {
             return true;
         }
 
-        let attackFrequency = distanceToPlayer < 1000 ? 5 : 3;
+        let attackFrequency = distanceToPlayer < 1000 ? 7 : 3;
         if (!(attackRatio % attackFrequency)) {
             this.throwKunai();
             return true;
@@ -287,6 +287,7 @@ export class Ninja extends Enemy {
     }
     
     throwKunai() {
+        this.isAttacking = true;
         this.sprite.setVelocityX(0);
         this.playAnimation(this.exclusiveStates.THROW);
         this.currentMovimentSize = 30;
