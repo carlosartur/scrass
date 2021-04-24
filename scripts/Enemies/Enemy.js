@@ -74,6 +74,9 @@ export class Enemy extends Clonable {
     /** @type {Boolean} */
     isAttacking = false;
 
+    /** @type {Boolean} */
+    destroyed = false;
+
     /**
      * @method
      */

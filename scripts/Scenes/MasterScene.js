@@ -230,8 +230,14 @@ export class MasterScene extends Phaser.Scene {
             this.physics.add.overlap(sprite, this.player.sprite, enemyWithoutCollider.touchPlayer.bind(enemyWithoutCollider));
         }
 
-        this.enemiesSprites.forEach(enemy => enemy.move());
+        this.enemiesSprites.forEach((enemy, index) => {
+            if (enemy.destroyed) {
+                delete this.enemiesSprites[index];
+            }
+        });
 
+        this.enemiesSprites = this.enemiesSprites.filter(item => !!item);
+        this.enemiesSprites.forEach(enemy => enemy.move());
         this.player.move(this.cursors);
     }
 

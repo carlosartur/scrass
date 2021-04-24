@@ -191,6 +191,8 @@ export class Ninja extends Enemy {
             (!this.sprite.body.enable)
             && this.deadDestroyCountdown <= 0
         ) {
+            this.destroyed = true;
+            this.sprite.destroy();
             return;
         }
 
@@ -286,6 +288,9 @@ export class Ninja extends Enemy {
         this.currentMovimentSize = 30;
     }
     
+    /**
+     * @returns {Boolean}
+     */
     throwKunai() {
         this.isAttacking = true;
         this.sprite.setVelocityX(0);

@@ -162,6 +162,7 @@ export class Player {
         this.sprite.displayHeight = 110;
 
         this.sprite.setBounce(0.2);
+        this.sprite.collideWorldBounds = true;
 
         if (!this.spritesLoaded) {
             for (let state in this.tiles) {
@@ -391,7 +392,7 @@ export class Player {
      * @param {*} crystal 
      */
     collectCrystal(playerSprite, crystal) {
-        crystal.disableBody(true, true);
+        crystal.destroy();
         self.score += 10;
     }
 
@@ -513,7 +514,7 @@ export class Player {
      * @method 
      */
     checkpoint(playerSprite, checkpointSprite) {
-        checkpointSprite.disableBody(true, true);
+        checkpointSprite.destroy();
         self.checkpointX = Math.floor(playerSprite.x);
         self.score += 200;
     }
