@@ -34,6 +34,8 @@ export class Kunai extends Enemy {
     /** @type {Number} */
     heigth = 60;
 
+    currentGravity = 0;
+
     init() {
         return this;
     }
@@ -55,7 +57,7 @@ export class Kunai extends Enemy {
     }
 
     /**
-     * @abstract
+     * @method
      */
     move() {
         if (!this.isReady) {
@@ -64,8 +66,29 @@ export class Kunai extends Enemy {
         }
         
         this.enemySprite.setVelocityX(this.currentHorizontalVelocity);
+        
         if (this.isOutOfStage) {
             this.disable();
+        }
+        this.slowDown();
+    }
+
+    /**
+     * @method
+     */
+    slowDown() {
+        let absVelocity = Math.abs(this.currentHorizontalVelocity),
+            multiplier = this.currentHorizontalVelocity > 0 ? 1 : -1;
+        
+        absVelocity -= 0.2;
+        
+        this.currentHorizontalVelocity = absVelocity * multiplier;
+        if (this.enemySprite?.body && absVelocity < 100) {
+            if (absVelocity < 150) {
+                this.currentGravity += 0.3;
+            }
+
+            this.enemySprite.setVelocityY(this.currentGravity);
         }
     }
 

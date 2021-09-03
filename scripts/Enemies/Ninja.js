@@ -296,6 +296,7 @@ export class Ninja extends Enemy {
         this.sprite.setVelocityX(0);
         this.playAnimation(this.exclusiveStates.THROW);
         this.currentMovimentSize = 30;
+        
         /** @type {Kunai} */
         let newKunai = this.kunai.clone();
         this.game.enemiesSprites.push(newKunai);
