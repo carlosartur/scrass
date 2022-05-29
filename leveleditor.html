@@ -23,10 +23,10 @@
             <p><div class="keybinding">ALT+n:</div> Generate generic floor</p>
             <p><div class="keybinding">ALT+g:</div> Generate final JSON file to include on the game</p>
             <p><div class="keybinding">ALT+c:</div> Clean the cursor, to stop to insert elements every click</p>
-            <p><div class="keybinding">ALT+k:</div> Moves the last clicked tile UP</p>
-            <p><div class="keybinding">ALT+,:</div> Moves the last clicked tile DOWN</p>
-            <p><div class="keybinding">ALT+m:</div> Moves the last clicked tile LEFT</p>
-            <p><div class="keybinding">ALT+.:</div> Moves the last clicked tile RIGHT</p>
+            <p><div class="keybinding">ALT+8:</div> Moves the last clicked tile UP</p>
+            <p><div class="keybinding">ALT+2:</div> Moves the last clicked tile DOWN</p>
+            <p><div class="keybinding">ALT+4:</div> Moves the last clicked tile LEFT</p>
+            <p><div class="keybinding">ALT+6:</div> Moves the last clicked tile RIGHT</p>
         </div>
     </div>
     <div class="body">
@@ -34,8 +34,12 @@
             <option value="">Select a option</option>
         </select>
         <button type="button" id="showhelp">Help</button>
-        <p>Level View</p>
-        <div id="level"></div>
+        
+        <div style="overflow-x: scroll;">
+            <p>Level View</p>
+            <div id="level"></div>
+        </div>
+        
         <div>
             <p>
                 <label for="finaljson">Level JSON</label>

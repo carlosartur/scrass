@@ -4,6 +4,7 @@ import {
 } from "../scripts/EnviromentSprites.js";
 
 var currentSelectedElement = null,
+    currentJsonLoadedObject = {},
     tilesTypes = {
         default: {
             "ninja": "enemies",
@@ -134,7 +135,7 @@ $(document).ready(function () {
         currentSelectedElement.attr('data-pos', JSON.stringify(positions));
         let id = currentSelectedElement.attr('id');
         if (!id) {
-            id = (new Date()).getTime();
+            id = parseInt(String(Math.random()).split(".").pop()) + (new Date()).getTime();
             currentSelectedElement.attr('id', id);
         }
         $(this).append(currentSelectedElement);
@@ -188,7 +189,22 @@ const functions = {
             finalObj[tileType][tileName] = finalObj[tileType][tileName] || [];
             finalObj[tileType][tileName].push(position);
         });
-        $("#finaljson").val(JSON.stringify(finalObj, null, 4));
+
+        finalObj.crystal = currentJsonLoadedObject.crystal || {
+            "key": "crystal",
+            "repeat": 150,
+            "setXY": {
+                "x": 12,
+                "y": 0,
+                "stepX": 70
+            }
+        };
+        
+        finalObj.enemies = currentJsonLoadedObject.enemies || {};
+
+        let finalJson = JSON.stringify(finalObj, null, 4);
+        currentJsonLoadedObject = finalObj;
+        $("#finaljson").val(finalJson);
     },
     clearCursor: function () {
         currentSelectedElement = null;
@@ -254,6 +270,10 @@ const functions = {
         try {
             let json = $("#finaljson").val(),
                 object = JSON.parse(json);
+            currentJsonLoadedObject = object;
+
+            let countTiles = 1;
+
             Object.entries(object).forEach(([typeName, type]) => {
                 if (['crystal', 'enemies'].includes(typeName)) {
                     return true;
@@ -270,12 +290,11 @@ const functions = {
                             'left': relX - $masterTile.width() / 2
                         });
 
+                        let id = countTiles++;
+
                         $insertTile.attr('data-pos', JSON.stringify(position));
-                        let id = $insertTile.attr('id');
-                        if (!id) {
-                            id = (new Date()).getTime();
-                            $insertTile.attr('id', id);
-                        }
+                        $insertTile.attr('id', id);
+                        
                         $insertTile.addClass("positioned");
                         $("#level").append($insertTile);
 
@@ -371,10 +390,10 @@ const keyBindigs = event => {
                 return true;
             },
             'c': functions.clearCursor,
-            'k': functions.moveTileUp,
-            ',': functions.moveTileDown,
-            'm': functions.moveTileLeft,
-            '.': functions.moveTileRight,
+            '8': functions.moveTileUp,
+            '2': functions.moveTileDown,
+            '4': functions.moveTileLeft,
+            '6': functions.moveTileRight,
             'l': functions.loadJson,
             'n': functions.generateFlatFloor,
             'y': functions.generateFromSeed
@@ -411,3 +430,11 @@ const getNElement = (arr, index) => {
     index = (seed % arr.length);
     return arr[index];
 }
+
+setInterval(() => {
+    $(".current-selected-element").removeClass("current-selected-element");
+    if (!currentSelectedElement) {
+        return;
+    }
+    currentSelectedElement.addClass("current-selected-element");
+}, 200);

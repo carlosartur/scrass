@@ -78,3 +78,7 @@
     width: 62px;
     display: inline-block;
 }
+
+.current-selected-element {
+    filter: invert(30%);
+}
