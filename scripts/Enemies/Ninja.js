@@ -231,7 +231,7 @@ export class Ninja extends Enemy {
             touchingRight = (this.sprite.x > this.game.size) || this.sprite.body.touching.right;
 
         if (movimentOver || touchingLeft || touchingRight || isFirstGroundTouch) {
-            let choosedDirection = this.chooseDirection(touchingLeft, touchingRight);
+            let choosedDirection = this.chooseDirection(touchingLeft, touchingRight, this.sprite.body.touching.down);
             this.configureMovimentDirection(choosedDirection);
         }
 
@@ -308,19 +308,20 @@ export class Ninja extends Enemy {
      * Choose the direction of running or jumping.
      * 
      * @param {Boolean} touchingLeft 
+     * @param {Boolean} touchingRight
      * @param {Boolean} touchingRight 
      */
-    chooseDirection(touchingLeft, touchingRight) {
+    chooseDirection(touchingLeft, touchingRight, touchingDown) {
         if (Phaser.Math.Distance.Between(this.game.player.sprite.x, this.game.player.sprite.y, this.sprite.x, this.sprite.y) < 1000) {
             if (this.sprite.x > this.game.player.sprite.x) {
-                if (touchingLeft) {
+                if (touchingLeft && touchingDown) {
                     return DIRECTIONS.UP;
                 }
                 return DIRECTIONS.LEFT;
             }
             
             if (this.sprite.x < this.game.player.sprite.x) {
-                if (touchingRight) {
+                if (touchingRight && touchingDown) {
                     return DIRECTIONS.UP;
                 }
                 return DIRECTIONS.RIGHT;
