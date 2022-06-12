@@ -1,21 +1,20 @@
-import {
-    Enemy
-} from "./Enemy.js";
+import { Enemy } from "./Enemy.js";
+
+import { MasterScene } from "../Scenes/MasterScene.js";
+
+import { Kunai } from './Kunai.js';
+
 import {
     range,
     intRandom
 } from "../Helpers.js";
+
 import {
     states,
     DIRECTIONS
 } from "../Player.js";
-import {
-    MasterScene
-} from "../Scenes/MasterScene.js";
 
-import {
-    Kunai
-} from './Kunai.js';
+
 export class Ninja extends Enemy {
 
     /** @type {String[]} */
@@ -285,7 +284,7 @@ export class Ninja extends Enemy {
         this.isAttacking = true;
         this.sprite.setVelocityX(0);
         this.playAnimation(this.exclusiveStates.ATTACK);
-        this.currentMovimentSize = 30;
+        this.currentMovimentSize = 60;
     }
     
     /**
@@ -312,6 +311,7 @@ export class Ninja extends Enemy {
      * @param {Boolean} touchingRight 
      */
     chooseDirection(touchingLeft, touchingRight, touchingDown) {
+        this.sprite.setVelocityY(-400);
         if (Phaser.Math.Distance.Between(this.game.player.sprite.x, this.game.player.sprite.y, this.sprite.x, this.sprite.y) < 1000) {
             if (this.sprite.x > this.game.player.sprite.x) {
                 if (touchingLeft && touchingDown) {

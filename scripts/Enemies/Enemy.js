@@ -1,12 +1,9 @@
-import {
-    states
-} from "../Player.js";
-import {
-    Clonable
-} from "../Clonable.js";
-import {
-    Scene1
-} from "../Scenes/Scene1.js";
+import { states } from "../Player.js";
+
+import { Clonable } from "../Clonable.js";
+
+import { Scene1 } from "../Scenes/Scene1.js";
+
 import { intRandom } from "../Helpers.js";
 
 export class Enemy extends Clonable {
@@ -69,7 +66,6 @@ export class Enemy extends Clonable {
 
     /** @type {Boolean} */
     alreadyTouchGround = false;
-
 
     /** @type {Boolean} */
     isAttacking = false;

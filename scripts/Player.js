@@ -121,6 +121,9 @@ export class Player {
     /** @type {Object} */
     cursors = null;
 
+    /** @type {Number} */
+    crystalCollected = 0;
+
     /**
      * @constructor
      */
@@ -394,6 +397,20 @@ export class Player {
     collectCrystal(playerSprite, crystal) {
         crystal.destroy();
         self.score += 10;
+        self.crystalCollected++;
+        
+        if (0 === (self.crystalCollected % 100)) {
+            self.lifes++;
+            self.crystalCollected = 0;
+            return;
+        }
+        
+        if (
+            0 === (self.crystalCollected % 25)
+            && self.initialLife > self.life
+        ) {
+            self.life += 10;
+        }
     }
 
     /**
@@ -430,9 +447,13 @@ export class Player {
             minTextBorderDistance = 16,
             currentPosition = this.cameraPositionX - spriteTextDistance,
             spaces = 7 - String(this.score).length,
-            lifeSpaces = 2 - String(this.lifes).length;
+            lifeSpaces = 2 - String(this.lifes).length,
+            crystalSpaces = 4 - String(this.crystalCollected).length,
+            score = `Score:${' '.repeat(spaces)}${this.score}`,
+            lifes = `Lifes:${' '.repeat(lifeSpaces)}${this.lifes}`,
+            crystals = `Crystals:${' '.repeat(crystalSpaces)}${this.crystalCollected}`;
 
-        text = text || `Score:${' '.repeat(spaces)}${this.score}${' '.repeat(15)}Lifes:${' '.repeat(lifeSpaces)}${this.lifes}`;
+        text = text || `${score}${' '.repeat(15)}${lifes}\n${crystals}`;
         this.display.setText(text);
         this.display.x = (currentPosition > minTextBorderDistance) ?
             currentPosition :
